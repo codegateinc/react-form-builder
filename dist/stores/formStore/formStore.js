@@ -41,10 +41,10 @@ const formStore = () => {
         [key]: {
           type: field.type,
           isPristine: true,
-          value: field?.value || '',
-          options: field?.options || [],
-          isRequired: field?.isRequired || false,
-          disabled: field?.disabled && field.disabled() || false
+          value: field.value || '',
+          options: field.options || [],
+          isRequired: field.isRequired || false,
+          disabled: field.disabled && field.disabled() || false
         }
       }))
     },
