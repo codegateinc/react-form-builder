@@ -51,7 +51,7 @@ const useForm = () => {
         return acc;
       }, {});
 
-      return config.state.successFunction && config.state.successFunction(parsedForm);
+      return _gUtils.G.ifDefined(config.state.successFunction, fn => fn(parsedForm));
     },
     hasChanges: _gUtils.G.toPairs(state.formState).some(([key, object]) => !object.isPristine),
     setField: (formFieldName, field) => actions.setFormField(formFieldName, field),

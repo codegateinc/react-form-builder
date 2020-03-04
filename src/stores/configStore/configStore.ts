@@ -1,10 +1,11 @@
 import { useState } from 'react'
+import { VoidFunction } from 'lib/types'
 import { FormConfig } from '../../types'
 
 export const configStore = () => {
     const [ config, setConfig ] = useState<FormConfig>()
-    const [ successFunction, setSuccessFunction ] = useState()
-    const [ errorFunction, setErrorFunction ] = useState()
+    const [ successFunction, setSuccessFunction ] = useState<VoidFunction>()
+    const [ errorFunction, setErrorFunction ] = useState<VoidFunction>()
 
     return {
         actions: {

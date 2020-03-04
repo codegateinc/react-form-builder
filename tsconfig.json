@@ -13,5 +13,6 @@
     "skipLibCheck": true,
     "noImplicitAny": false,
     "baseUrl": "src"
-  }
+  },
+  "exclude": ["dist"]
 }

@@ -1,5 +1,5 @@
 import { useStore } from 'outstated'
-import { G } from 'gUtils'
+import { G } from '@codegateinc/g-utils'
 import { configStore, formStore } from '../stores'
 import { FieldState, FormCheckBoxState, FormFieldType, FormInputState, FormOption, FormPickerState } from '../types'
 
