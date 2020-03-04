@@ -3,12 +3,12 @@
   "author": "@codegate",
   "license": "MIT",
   "typings": "index.d.ts",
-  "version": "0.0.4",
+  "version": "0.0.6",
   "main": "dist/index.js",
   "scripts": {
     "test": "jest",
     "tsc": "node node_modules/typescript/bin/tsc",
-    "precommit": "concurrently 'yarn test' 'yarn build' 'yarn updateVersion' && git add dist package.json",
+    "precommit": "concurrently 'tsc' 'yarn test' 'yarn build' 'yarn updateVersion' && git add dist package.json",
     "build": "rm -rf dist && babel ./src --out-dir dist --extensions \".ts\" --no-copy-ignored",
     "updateVersion": "yarn version --patch --no-git-tag-version",
     "test-coverage": "jest --coverage"
@@ -37,7 +37,7 @@
     "react": "16.13.0",
     "react-test-renderer": "16.13.0",
     "ts-jest": "25.2.0",
-    "typescript": "3.7.5"
+    "typescript": "3.8.3"
   },
   "husky": {
     "hooks": {

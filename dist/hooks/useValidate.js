@@ -7,7 +7,7 @@ exports.useValidate = void 0;
 
 var _outstated = require("outstated");
 
-var _gUtils = require("gUtils");
+var _gUtils = require("@codegateinc/g-utils");
 
 var _stores = require("../stores");
 

@@ -45,7 +45,7 @@ export const useForm = <T>() => {
                     return acc
                 }, {})
 
-            return config.state.successFunction && config.state.successFunction(parsedForm)
+            return G.ifDefined(config.state.successFunction, fn => fn(parsedForm))
         },
         hasChanges: G.toPairs<FieldState>(state.formState)
             .some(([key, object]) => !object.isPristine),
