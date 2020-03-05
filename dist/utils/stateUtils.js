@@ -1,25 +1,13 @@
-"use strict";
-
-Object.defineProperty(exports, "__esModule", {
-  value: true
-});
-exports.handleFormConfigChange = exports.prepareFormInitialState = void 0;
-
-var _gUtils = require("@codegateinc/g-utils");
-
-var _deepEqual = _interopRequireDefault(require("deep-equal"));
-
-var _types = require("../types");
-
-function _interopRequireDefault(obj) { return obj && obj.__esModule ? obj : { default: obj }; }
-
-const prepareFormInitialState = (formConfig, prevState) => {
-  const configToPairs = _gUtils.G.toPairs(formConfig).map(([fieldName, config]) => {
+import { G } from '@codegateinc/g-utils';
+import equals from 'deep-equal';
+import { FormFieldType } from '../types';
+export const prepareFormInitialState = (formConfig, prevState) => {
+  const configToPairs = G.toPairs(formConfig).map(([fieldName, config]) => {
     if (config?.isRequired && !config?.validationRules) {
       throw new Error('validationRules are required if field isRequired  ');
     }
 
-    if (config.type === _types.FormFieldType.Input || config.type === _types.FormFieldType.CheckBox) {
+    if (config.type === FormFieldType.Input || config.type === FormFieldType.CheckBox) {
       const prevField = prevState && prevState[fieldName];
       return [fieldName, {
         value: prevField?.value || config?.value || '',
@@ -31,9 +19,10 @@ const prepareFormInitialState = (formConfig, prevState) => {
       }];
     }
 
-    if (config.type === _types.FormFieldType.Picker) {
+    if (config.type === FormFieldType.Picker) {
       const prevField = prevState && prevState[fieldName];
-      const areOptionsSame = config.options && config.options.every((option, index) => {
+      const areOptionsSameCondition = G.all(G.isDefined(config.options), G.hasElements(config.options), G.hasElements((prevField?.options)));
+      const areOptionsSame = areOptionsSameCondition && config.options.every((option, index) => {
         const labelsAreTheSame = option.label === prevField?.options[index].label;
         const valuesAreTheSame = option.value === prevField?.options[index].value;
         return labelsAreTheSame && valuesAreTheSame;
@@ -48,25 +37,20 @@ const prepareFormInitialState = (formConfig, prevState) => {
       }];
     }
   });
-
-  return _gUtils.G.fromPairs(configToPairs);
+  return G.fromPairs(configToPairs);
 };
-
-exports.prepareFormInitialState = prepareFormInitialState;
-
-const handleFormConfigChange = (prevConfig, formConfig) => {
+export const handleFormConfigChange = (prevConfig, formConfig) => {
   let hasChanges = false;
-
-  const configToPairs = _gUtils.G.toPairs(prevConfig).map(([fieldName, config]) => {
+  const configToPairs = G.toPairs(prevConfig).map(([fieldName, config]) => {
     if (config?.isRequired && !config?.validationRules) {
       throw new Error('validationRules are required if field isRequired');
     }
 
-    const checkedField = _gUtils.G.fromPairs(_gUtils.G.toPairs(config).map(([key, value]) => {
+    const checkedField = G.fromPairs(G.toPairs(config).map(([key, value]) => {
       const field = formConfig[fieldName];
 
       if (key === 'validationRules') {
-        const validationRules = _gUtils.G.toPairs(value).map(([, rule], index) => {
+        const validationRules = G.toPairs(value).map(([, rule], index) => {
           if (field.validationRules && rule.errorMessage !== field.validationRules[index].errorMessage) {
             hasChanges = true;
             return field.validationRules[index];
@@ -74,25 +58,20 @@ const handleFormConfigChange = (prevConfig, formConfig) => {
 
           return rule;
         });
-
         return [key, validationRules];
       }
 
-      if ((0, _deepEqual.default)(value, field[key])) {
+      if (equals(value, field[key])) {
         return [key, value];
       }
 
       hasChanges = true;
       return [key, field[key]];
     }));
-
     return [fieldName, checkedField];
   });
-
   return {
     hasChanges,
-    newConfig: _gUtils.G.fromPairs(configToPairs)
+    newConfig: G.fromPairs(configToPairs)
   };
 };
-
-exports.handleFormConfigChange = handleFormConfigChange;

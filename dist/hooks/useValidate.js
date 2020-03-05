@@ -1,21 +1,10 @@
-"use strict";
-
-Object.defineProperty(exports, "__esModule", {
-  value: true
-});
-exports.useValidate = void 0;
-
-var _outstated = require("outstated");
-
-var _gUtils = require("@codegateinc/g-utils");
-
-var _stores = require("../stores");
-
-var _types = require("../types");
-
-const useValidate = () => {
-  const form = (0, _outstated.useStore)(_stores.formStore);
-  const config = (0, _outstated.useStore)(_stores.configStore);
+import { useStore } from 'outstated';
+import { G } from '@codegateinc/g-utils';
+import { configStore, formStore } from '../stores';
+import { FormFieldType } from '../types';
+export const useValidate = () => {
+  const form = useStore(formStore);
+  const config = useStore(configStore);
   return {
     validateField: (key, value) => {
       const field = config.state.config && config.state.config[key];
@@ -47,10 +36,10 @@ const useValidate = () => {
 
       form.actions.setFormError(key, errorMessage);
     },
-    validateForm: (shouldUpdateStore = true) => _gUtils.G.toPairs(form.state.formState).map(([key, formState]) => {
+    validateForm: (shouldUpdateStore = true) => G.toPairs(form.state.formState).map(([key, formState]) => {
       const configField = config.state.config && config.state.config[key];
 
-      if (configField?.validationRules && formState.type === _types.FormFieldType.Input) {
+      if (configField?.validationRules && formState.type === FormFieldType.Input) {
         const value = formState.value;
         const validated = configField.validationRules.map(rule => rule.validationFunction(value) ? rule.errorMessage : undefined);
         const [errorMessage] = validated.filter(value => value);
@@ -62,7 +51,7 @@ const useValidate = () => {
         return errorMessage;
       }
 
-      if (configField?.validationRules && formState.type === _types.FormFieldType.CheckBox) {
+      if (configField?.validationRules && formState.type === FormFieldType.CheckBox) {
         const value = formState.value;
         const [rule] = configField.validationRules;
         const errorMessage = rule.validationFunction(value) ? rule.errorMessage : undefined;
@@ -74,7 +63,7 @@ const useValidate = () => {
         return errorMessage;
       }
 
-      if (configField?.validationRules && formState.type === _types.FormFieldType.Picker) {
+      if (configField?.validationRules && formState.type === FormFieldType.Picker) {
         const options = formState.options;
         const validated = configField.validationRules.map(rule => rule.validationFunction(options) ? rule.errorMessage : undefined);
         const [errorMessage] = validated.filter(value => value);
@@ -88,5 +77,3 @@ const useValidate = () => {
     })
   };
 };
-
-exports.useValidate = useValidate;

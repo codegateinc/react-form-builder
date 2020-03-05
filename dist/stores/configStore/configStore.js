@@ -1,16 +1,8 @@
-"use strict";
-
-Object.defineProperty(exports, "__esModule", {
-  value: true
-});
-exports.configStore = void 0;
-
-var _react = require("react");
-
-const configStore = () => {
-  const [config, setConfig] = (0, _react.useState)();
-  const [successFunction, setSuccessFunction] = (0, _react.useState)();
-  const [errorFunction, setErrorFunction] = (0, _react.useState)();
+import { useState } from 'react';
+export const configStore = () => {
+  const [config, setConfig] = useState();
+  const [successFunction, setSuccessFunction] = useState();
+  const [errorFunction, setErrorFunction] = useState();
   return {
     actions: {
       setConfig,
@@ -24,5 +16,3 @@ const configStore = () => {
     }
   };
 };
-
-exports.configStore = configStore;

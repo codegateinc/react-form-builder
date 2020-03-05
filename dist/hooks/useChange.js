@@ -1,26 +1,16 @@
-"use strict";
-
-Object.defineProperty(exports, "__esModule", {
-  value: true
-});
-exports.useChange = void 0;
-
-var _outstated = require("outstated");
-
-var _useValidate = require("./useValidate");
-
-var _stores = require("../stores");
-
-const useChange = () => {
+import { useStore } from 'outstated';
+import { useValidate } from './useValidate';
+import { formStore } from '../stores';
+export const useChange = () => {
   const {
     state,
     actions
-  } = (0, _outstated.useStore)(_stores.formStore);
+  } = useStore(formStore);
   const {
     validateField,
     validateCheckBox,
     validatePicker
-  } = (0, _useValidate.useValidate)();
+  } = useValidate();
   return {
     onInputChange: (key, value) => {
       const field = state.formState[key];
@@ -47,5 +37,3 @@ const useChange = () => {
     }
   };
 };
-
-exports.useChange = useChange;
