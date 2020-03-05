@@ -34,7 +34,12 @@ export const prepareFormInitialState = (formConfig: FormConfig, prevState?: Form
 
             if (config.type === FormFieldType.Picker) {
                 const prevField = prevState && prevState[fieldName] as FormPickerState
-                const areOptionsSame = config.options && config.options
+                const areOptionsSameCondition = G.all(
+                    G.isDefined(config.options),
+                    G.hasElements(config.options),
+                    G.hasElements(prevField?.options)
+                )
+                const areOptionsSame = areOptionsSameCondition && config.options!
                     .every((option, index) => {
                         const labelsAreTheSame = option.label === prevField?.options[index].label
                         const valuesAreTheSame = option.value === prevField?.options[index].value
