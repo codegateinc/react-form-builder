@@ -6,8 +6,8 @@ export type InputComponentProps = {
     disabled: boolean,
     isPristine: boolean,
     errorMessage?: string,
-    onBlur?: VoidFunction,
-    onChangeText?(text: string): void
+    onBlur: VoidFunction,
+    onChangeText(text: string): void
 }
 
 export type InputProps = {
