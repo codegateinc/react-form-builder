@@ -1,14 +1,6 @@
-"use strict";
-
-Object.defineProperty(exports, "__esModule", {
-  value: true
-});
-exports.formStore = void 0;
-
-var _react = require("react");
-
-const formStore = () => {
-  const [formState, setFormState] = (0, _react.useState)({});
+import { useState } from 'react';
+export const formStore = () => {
+  const [formState, setFormState] = useState({});
   return {
     actions: {
       setFormState,
@@ -53,5 +45,3 @@ const formStore = () => {
     }
   };
 };
-
-exports.formStore = formStore;

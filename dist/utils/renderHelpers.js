@@ -1,27 +1,10 @@
-"use strict";
-
-Object.defineProperty(exports, "__esModule", {
-  value: true
-});
-exports.renderForm = void 0;
-
-var _react = _interopRequireWildcard(require("react"));
-
-var _outstated = require("outstated");
-
-var _stateUtils = require("./stateUtils");
-
-var _hooks = require("../hooks");
-
-var _stores = require("../stores");
-
-var _components = require("../components");
-
-function _getRequireWildcardCache() { if (typeof WeakMap !== "function") return null; var cache = new WeakMap(); _getRequireWildcardCache = function () { return cache; }; return cache; }
-
-function _interopRequireWildcard(obj) { if (obj && obj.__esModule) { return obj; } if (obj === null || typeof obj !== "object" && typeof obj !== "function") { return { default: obj }; } var cache = _getRequireWildcardCache(); if (cache && cache.has(obj)) { return cache.get(obj); } var newObj = {}; var hasPropertyDescriptor = Object.defineProperty && Object.getOwnPropertyDescriptor; for (var key in obj) { if (Object.prototype.hasOwnProperty.call(obj, key)) { var desc = hasPropertyDescriptor ? Object.getOwnPropertyDescriptor(obj, key) : null; if (desc && (desc.get || desc.set)) { Object.defineProperty(newObj, key, desc); } else { newObj[key] = obj[key]; } } } newObj.default = obj; if (cache) { cache.set(obj, newObj); } return newObj; }
-
-const renderForm = (children, formConfig, onSuccess, onError) => {
+import React, { useEffect } from 'react';
+import { useStore } from 'outstated';
+import { prepareFormInitialState, handleFormConfigChange } from './stateUtils';
+import { useEvents } from '../hooks';
+import { configStore, formStore } from '../stores';
+import { CheckBox, Input, Picker } from '../components';
+export const renderForm = (children, formConfig, onSuccess, onError) => {
   if (!children) {
     throw new Error('children are mandatory');
   }
@@ -33,16 +16,16 @@ const renderForm = (children, formConfig, onSuccess, onError) => {
   const {
     state,
     actions
-  } = (0, _outstated.useStore)(_stores.configStore);
-  const form = (0, _outstated.useStore)(_stores.formStore);
-  (0, _react.useEffect)(() => {
-    const formState = (0, _stateUtils.prepareFormInitialState)(formConfig);
+  } = useStore(configStore);
+  const form = useStore(formStore);
+  useEffect(() => {
+    const formState = prepareFormInitialState(formConfig);
     actions.setConfig(formConfig);
     actions.setErrorFunction(() => onError);
     actions.setSuccessFunction(() => onSuccess);
     form.actions.setFormState(formState);
   }, []);
-  (0, _react.useEffect)(() => {
+  useEffect(() => {
     if (!state.config) {
       return;
     }
@@ -50,18 +33,16 @@ const renderForm = (children, formConfig, onSuccess, onError) => {
     const {
       newConfig,
       hasChanges
-    } = (0, _stateUtils.handleFormConfigChange)(state.config, formConfig);
+    } = handleFormConfigChange(state.config, formConfig);
 
     if (hasChanges) {
-      const newState = (0, _stateUtils.prepareFormInitialState)(formConfig, form.state.formState);
+      const newState = prepareFormInitialState(formConfig, form.state.formState);
       actions.setConfig(newConfig);
       form.actions.setFormState(newState);
     }
   }, [formConfig, form]);
-  return _react.default.Children.map(children, renderChild);
+  return React.Children.map(children, renderChild);
 };
-
-exports.renderForm = renderForm;
 
 const renderChild = child => {
   if (typeof child === 'string' || typeof child === 'number' || typeof child === null) {
@@ -71,17 +52,17 @@ const renderChild = child => {
 
   const reactElementChild = child;
 
-  if (reactElementChild.type === _components.Input) {
+  if (reactElementChild.type === Input) {
     const {
       state
-    } = (0, _outstated.useStore)(_stores.formStore);
+    } = useStore(formStore);
     const {
       input
-    } = (0, _hooks.useEvents)();
+    } = useEvents();
     const inputChild = child;
     const key = inputChild.props.formFieldName;
     const inputState = state.formState[key];
-    return _react.default.cloneElement(inputChild, { ...inputChild.props,
+    return React.cloneElement(inputChild, { ...inputChild.props,
       component: () => inputChild.props.component({
         value: inputState?.value || '',
         onChangeText: text => input.onChange(key, text),
@@ -93,17 +74,17 @@ const renderChild = child => {
     });
   }
 
-  if (reactElementChild.type === _components.CheckBox) {
+  if (reactElementChild.type === CheckBox) {
     const {
       state
-    } = (0, _outstated.useStore)(_stores.formStore);
+    } = useStore(formStore);
     const {
       checkBox
-    } = (0, _hooks.useEvents)();
+    } = useEvents();
     const checkBoxChild = child;
     const key = checkBoxChild.props.formFieldName;
     const checkBoxState = state.formState[key];
-    return _react.default.cloneElement(checkBoxChild, { ...checkBoxChild.props,
+    return React.cloneElement(checkBoxChild, { ...checkBoxChild.props,
       component: () => checkBoxChild.props.component({
         value: checkBoxState?.value || false,
         onChange: () => checkBox.onChange(key),
@@ -114,17 +95,17 @@ const renderChild = child => {
     });
   }
 
-  if (reactElementChild.type === _components.Picker) {
+  if (reactElementChild.type === Picker) {
     const {
       state
-    } = (0, _outstated.useStore)(_stores.formStore);
+    } = useStore(formStore);
     const {
       picker
-    } = (0, _hooks.useEvents)();
+    } = useEvents();
     const pickerChild = child;
     const key = pickerChild.props.formFieldName;
     const pickerState = state.formState[key];
-    return _react.default.cloneElement(pickerChild, { ...pickerChild.props,
+    return React.cloneElement(pickerChild, { ...pickerChild.props,
       component: () => pickerChild.props.component({
         onChange: options => picker.onChange(key, options),
         errorMessage: pickerState?.errorMessage,
@@ -138,9 +119,8 @@ const renderChild = child => {
   const reactElementChildren = reactElementChild.props.children;
 
   if (reactElementChildren) {
-    const newChildren = _react.default.Children.map(reactElementChildren, renderChild);
-
-    return _react.default.cloneElement(reactElementChild, reactElementChild.props, newChildren);
+    const newChildren = React.Children.map(reactElementChildren, renderChild);
+    return React.cloneElement(reactElementChild, reactElementChild.props, newChildren);
   }
 
   return reactElementChild;

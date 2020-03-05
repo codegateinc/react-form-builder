@@ -3,7 +3,7 @@
   "author": "@codegate",
   "license": "MIT",
   "typings": "index.d.ts",
-  "version": "0.0.9",
+  "version": "0.0.10",
   "main": "dist/index.js",
   "scripts": {
     "test": "jest",
@@ -11,7 +11,8 @@
     "precommit": "concurrently 'tsc' 'yarn test' 'yarn build' 'yarn updateVersion' && git add dist package.json",
     "build": "rm -rf dist && babel ./src --out-dir dist --extensions \".ts,.tsx\" --no-copy-ignored",
     "updateVersion": "yarn version --patch --no-git-tag-version",
-    "test-coverage": "jest --coverage"
+    "test-coverage": "jest --coverage",
+    "generate-types": "tsc --declaration"
   },
   "peerDependencies": {
     "react": "^16.13.0"
@@ -25,6 +26,7 @@
     "@babel/cli": "7.8.4",
     "@babel/core": "7.8.4",
     "@babel/plugin-transform-modules-commonjs": "7.8.3",
+    "@babel/plugin-transform-react-jsx": "7.8.3",
     "@babel/preset-typescript": "7.8.3",
     "@testing-library/react-hooks": "3.2.1",
     "@types/jest": "25.1.2",

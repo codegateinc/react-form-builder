@@ -1,7 +1,6 @@
 import React from 'react'
-import { CheckBoxProps, FieldConfig, FormProps, InputProps, PickerProps } from './src/types'
-import { VoidFunction } from './src/lib/types'
-import * as FormTypes from './src/types'
+import { CheckBoxProps, FieldConfig, FormProps, InputProps, PickerProps, VoidFunction } from './types'
+import * as FormTypes from './types'
 
 export namespace Field {
     export const Input: React.FunctionComponent<InputProps> = () => {}
