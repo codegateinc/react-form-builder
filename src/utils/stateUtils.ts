@@ -41,11 +41,11 @@ export const prepareFormInitialState = (formConfig: FormConfig, prevState?: Form
                 )
                 const areOptionsSame = areOptionsSameCondition && config.options!
                     .every((option, index) => {
-                        const labelsAreTheSame = option.label === prevField?.options[index].label
-                        const valuesAreTheSame = option.value === prevField?.options[index].value
-                        const isSelectedAreTheSame = option.isSelected === prevField?.options[index].isSelected
+                        const areLabelsTheSame = option.label === prevField?.options[index].label
+                        const areValuesTheSame = option.value === prevField?.options[index].value
+                        const areSelectsTheSame = option.isSelected === prevField?.options[index].isSelected
 
-                        return labelsAreTheSame && valuesAreTheSame && isSelectedAreTheSame
+                        return areLabelsTheSame && areValuesTheSame && areSelectsTheSame
                     })
 
                 return [fieldName, {
