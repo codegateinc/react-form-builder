@@ -45,7 +45,11 @@ export const prepareFormInitialState = (formConfig: FormConfig, prevState?: Form
                         const areValuesTheSame = option.value === prevField?.options[index].value
                         const areSelectsTheSame = option.isSelected === prevField?.options[index].isSelected
 
-                        return areLabelsTheSame && areValuesTheSame && areSelectsTheSame
+                        return G.all(
+                            areLabelsTheSame,
+                            areValuesTheSame,
+                            areSelectsTheSame
+                        )
                     })
 
                 return [fieldName, {
