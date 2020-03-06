@@ -12,6 +12,5 @@ export type InputComponentProps = {
 
 export type InputProps = {
     formFieldName: string,
-    errorMessage?: string,
     component(props: InputComponentProps): React.ReactNode
 }

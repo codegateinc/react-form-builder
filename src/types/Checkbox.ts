@@ -11,6 +11,5 @@ export type CheckboxComponentProps = {
 
 export type CheckBoxProps = {
     formFieldName: string,
-    errorMessage?: string,
     component(props: CheckboxComponentProps): React.ReactNode
 }
