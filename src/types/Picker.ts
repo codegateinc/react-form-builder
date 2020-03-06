@@ -13,6 +13,5 @@ export type PickerComponentProps = {
 
 export type PickerProps = {
     formFieldName: string,
-    errorMessage?: string,
     component(props: PickerComponentProps): React.ReactNode
 }
