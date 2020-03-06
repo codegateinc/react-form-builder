@@ -55,6 +55,8 @@ export const renderForm = (
             const newState = prepareFormInitialState(formConfig, form.state.formState)
 
             actions.setConfig(newConfig)
+            actions.setErrorFunction(() => onError)
+            actions.setSuccessFunction(() => onSuccess)
             form.actions.setFormState(newState)
         }
     }, [formConfig, form])

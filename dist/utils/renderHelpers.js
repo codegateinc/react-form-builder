@@ -38,6 +38,8 @@ export const renderForm = (children, formConfig, onSuccess, onError) => {
     if (hasChanges) {
       const newState = prepareFormInitialState(formConfig, form.state.formState);
       actions.setConfig(newConfig);
+      actions.setErrorFunction(() => onError);
+      actions.setSuccessFunction(() => onSuccess);
       form.actions.setFormState(newState);
     }
   }, [formConfig, form]);
