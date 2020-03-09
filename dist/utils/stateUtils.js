@@ -9,8 +9,9 @@ export const prepareFormInitialState = (formConfig, prevState) => {
 
     if (config.type === FormFieldType.Input || config.type === FormFieldType.CheckBox) {
       const prevField = prevState && prevState[fieldName];
+      const areValuesSame = prevField?.value === config.value;
       return [fieldName, {
-        value: prevField?.value || config?.value || '',
+        value: areValuesSame ? prevField?.value : config.value || '',
         isRequired: config?.isRequired || false,
         isPristine: true,
         disabled: config.disabled && config.disabled() || false,
@@ -49,6 +50,10 @@ export const handleFormConfigChange = (prevConfig, formConfig) => {
 
     const checkedField = G.fromPairs(G.toPairs(config).map(([key, value]) => {
       const field = formConfig[fieldName];
+
+      if (!field) {
+        return [key, value];
+      }
 
       if (key === 'validationRules') {
         const validationRules = G.toPairs(value).map(([, rule], index) => {
