@@ -27,7 +27,7 @@ export type FieldConfig = {
     isRequired?: boolean,
     validationRules?: Array<FormValidationRule>,
     options?: Array<FormOption>,
-    disabled?(): boolean
+    disabled?: boolean
 }
 
 export type FormConfig = KeyValuePair<FieldConfig>

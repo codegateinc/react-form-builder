@@ -47,7 +47,7 @@ export const formStore = () => {
             value: field.value || '',
             options: field.options || [],
             isRequired: field.isRequired || false,
-            disabled: field.disabled && field.disabled() || false
+            disabled: field.disabled || false
           }
         }
       }))

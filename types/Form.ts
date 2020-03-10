@@ -27,7 +27,7 @@ export type FieldConfig = {
     isRequired?: boolean,
     validationRules?: Array<FormValidationRule>,
     options?: Array<FormOption>,
-    disabled?(): boolean
+    disabled?: boolean
 }
 
 export type FormConfig = KeyValuePair<FieldConfig>
@@ -37,6 +37,7 @@ export type OnError = (errors: Array<KeyValuePair>) => void
 
 export type FormProps = {
     formConfig: FormConfig,
+    formName: string,
     onSuccess?: OnSuccess,
     onError?: OnError
 }

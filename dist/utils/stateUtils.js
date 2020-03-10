@@ -14,7 +14,7 @@ export const prepareFormInitialState = (formConfig, prevState) => {
         value: areValuesSame ? prevField?.value : config.value || '',
         isRequired: config?.isRequired || false,
         isPristine: true,
-        disabled: config.disabled && config.disabled() || false,
+        disabled: config?.disabled || false,
         type: config.type,
         errorMessage: undefined
       }];
@@ -32,7 +32,7 @@ export const prepareFormInitialState = (formConfig, prevState) => {
       return [fieldName, {
         isRequired: config?.isRequired || false,
         isPristine: true,
-        disabled: config.disabled && config.disabled() || false,
+        disabled: config?.disabled || false,
         type: config.type,
         errorMessage: undefined,
         options: areOptionsSame ? prevField?.options : config.options
