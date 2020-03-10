@@ -8,8 +8,10 @@ export const useValidate = () => {
     const config = useStore(configStore)
 
     return {
-        validateField: (key: string, value: string) => {
-            const field = config.state.config && config.state.config[key]
+        validateField: (formName: string, key: string, value: string) => {
+            const field = config.state.configStore &&
+                config.state.configStore[formName] &&
+                config.state.configStore[formName][key]
 
             if (field?.validationRules) {
                 const validated = field.validationRules
@@ -20,11 +22,13 @@ export const useValidate = () => {
                 const [ errorMessage ] = validated
                     .filter(value => value)
 
-                form.actions.setFormError(key, errorMessage)
+                form.actions.setFormError(formName, key, errorMessage)
             }
         },
-        validateCheckBox: (key: string, value: boolean) => {
-            const field = config.state.config && config.state.config[key]
+        validateCheckBox: (formName: string, key: string, value: boolean) => {
+            const field = config.state.configStore &&
+                config.state.configStore[formName] &&
+                config.state.configStore[formName][key]
 
             if (field?.validationRules) {
                 const [ rule ] = field.validationRules
@@ -32,11 +36,13 @@ export const useValidate = () => {
                     ? rule.errorMessage
                     : undefined
 
-                form.actions.setFormError(key, errorMessage)
+                form.actions.setFormError(formName, key, errorMessage)
             }
         },
-        validatePicker: (key: string, options: Array<FormOption>) => {
-            const field = config.state.config && config.state.config[key]
+        validatePicker: (formName: string, key: string, options: Array<FormOption>) => {
+            const field = config.state.configStore &&
+                config.state.configStore[formName] &&
+                config.state.configStore[formName][key]
             const validated = field?.validationRules && field.validationRules
                 .map(rule => rule.validationFunction(options)
                     ? rule.errorMessage
@@ -48,14 +54,14 @@ export const useValidate = () => {
                 .some(option => option.isSelected)
 
             if (field?.isRequired && isAnyOptionSelected) {
-                return form.actions.setFormError(key, errorMessage)
+                return form.actions.setFormError(formName, key, errorMessage)
             }
 
-            form.actions.setFormError(key, errorMessage)
+            form.actions.setFormError(formName, key, errorMessage)
         },
-        validateForm: (shouldUpdateStore: boolean = true) => G.toPairs<FieldState>(form.state.formState)
+        validateForm: (formName: string, shouldUpdateStore: boolean = true) => form.state.formState[formName] ? G.toPairs<FieldState>(form.state.formState[formName])
             .map(([key, formState]) => {
-                const configField = config.state.config && config.state.config[key]
+                const configField = config.state.configStore && config.state.configStore[formName][key]
 
                 if (configField?.validationRules && formState.type === FormFieldType.Input) {
                     const value = (formState as FormInputState).value
@@ -68,7 +74,7 @@ export const useValidate = () => {
                         .filter(value => value)
 
                     if (shouldUpdateStore) {
-                        form.actions.setFormError(key, errorMessage)
+                        form.actions.setFormError(formName, key, errorMessage)
                     }
 
                     return errorMessage
@@ -82,7 +88,7 @@ export const useValidate = () => {
                         : undefined
 
                     if (shouldUpdateStore) {
-                        form.actions.setFormError(key, errorMessage)
+                        form.actions.setFormError(formName, key, errorMessage)
                     }
 
                     return errorMessage
@@ -99,11 +105,11 @@ export const useValidate = () => {
                         .filter(value => value)
 
                     if (shouldUpdateStore) {
-                        form.actions.setFormError(key, errorMessage)
+                        form.actions.setFormError(formName, key, errorMessage)
                     }
 
                     return errorMessage
                 }
-            })
+            }) : []
     }
 }

@@ -6,38 +6,38 @@ export const useValidate = () => {
   const form = useStore(formStore);
   const config = useStore(configStore);
   return {
-    validateField: (key, value) => {
-      const field = config.state.config && config.state.config[key];
+    validateField: (formName, key, value) => {
+      const field = config.state.configStore && config.state.configStore[formName] && config.state.configStore[formName][key];
 
       if (field?.validationRules) {
         const validated = field.validationRules.map(rule => rule.validationFunction(value) ? rule.errorMessage : undefined);
         const [errorMessage] = validated.filter(value => value);
-        form.actions.setFormError(key, errorMessage);
+        form.actions.setFormError(formName, key, errorMessage);
       }
     },
-    validateCheckBox: (key, value) => {
-      const field = config.state.config && config.state.config[key];
+    validateCheckBox: (formName, key, value) => {
+      const field = config.state.configStore && config.state.configStore[formName] && config.state.configStore[formName][key];
 
       if (field?.validationRules) {
         const [rule] = field.validationRules;
         const errorMessage = rule.validationFunction(value) ? rule.errorMessage : undefined;
-        form.actions.setFormError(key, errorMessage);
+        form.actions.setFormError(formName, key, errorMessage);
       }
     },
-    validatePicker: (key, options) => {
-      const field = config.state.config && config.state.config[key];
+    validatePicker: (formName, key, options) => {
+      const field = config.state.configStore && config.state.configStore[formName] && config.state.configStore[formName][key];
       const validated = field?.validationRules && field.validationRules.map(rule => rule.validationFunction(options) ? rule.errorMessage : undefined);
       const [errorMessage] = validated || [undefined].filter(value => value);
       const isAnyOptionSelected = field?.options && field.options.some(option => option.isSelected);
 
       if (field?.isRequired && isAnyOptionSelected) {
-        return form.actions.setFormError(key, errorMessage);
+        return form.actions.setFormError(formName, key, errorMessage);
       }
 
-      form.actions.setFormError(key, errorMessage);
+      form.actions.setFormError(formName, key, errorMessage);
     },
-    validateForm: (shouldUpdateStore = true) => G.toPairs(form.state.formState).map(([key, formState]) => {
-      const configField = config.state.config && config.state.config[key];
+    validateForm: (formName, shouldUpdateStore = true) => form.state.formState[formName] ? G.toPairs(form.state.formState[formName]).map(([key, formState]) => {
+      const configField = config.state.configStore && config.state.configStore[formName][key];
 
       if (configField?.validationRules && formState.type === FormFieldType.Input) {
         const value = formState.value;
@@ -45,7 +45,7 @@ export const useValidate = () => {
         const [errorMessage] = validated.filter(value => value);
 
         if (shouldUpdateStore) {
-          form.actions.setFormError(key, errorMessage);
+          form.actions.setFormError(formName, key, errorMessage);
         }
 
         return errorMessage;
@@ -57,7 +57,7 @@ export const useValidate = () => {
         const errorMessage = rule.validationFunction(value) ? rule.errorMessage : undefined;
 
         if (shouldUpdateStore) {
-          form.actions.setFormError(key, errorMessage);
+          form.actions.setFormError(formName, key, errorMessage);
         }
 
         return errorMessage;
@@ -69,11 +69,11 @@ export const useValidate = () => {
         const [errorMessage] = validated.filter(value => value);
 
         if (shouldUpdateStore) {
-          form.actions.setFormError(key, errorMessage);
+          form.actions.setFormError(formName, key, errorMessage);
         }
 
         return errorMessage;
       }
-    })
+    }) : []
   };
 };

@@ -1,18 +1,24 @@
 import { useState } from 'react';
 export const configStore = () => {
-  const [config, setConfig] = useState();
-  const [successFunction, setSuccessFunction] = useState();
-  const [errorFunction, setErrorFunction] = useState();
+  const [configStore, setConfig] = useState();
+  const [configSuccessFunction, setSuccessFunction] = useState({});
+  const [configErrorFunction, setErrorFunction] = useState({});
   return {
     actions: {
-      setConfig,
-      setSuccessFunction,
-      setErrorFunction
+      setConfig: (key, newConfig) => setConfig(prevState => ({ ...prevState,
+        [key]: newConfig
+      })),
+      setSuccessFunction: (key, newOnSuccess) => newOnSuccess && setSuccessFunction(prevState => ({ ...prevState,
+        [key]: newOnSuccess
+      })),
+      setErrorFunction: (key, newOnError) => newOnError && setErrorFunction(prevState => ({ ...prevState,
+        [key]: newOnError
+      }))
     },
     state: {
-      config,
-      successFunction,
-      errorFunction
+      configStore,
+      configSuccessFunction,
+      configErrorFunction
     }
   };
 };

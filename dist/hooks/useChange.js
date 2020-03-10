@@ -12,28 +12,28 @@ export const useChange = () => {
     validatePicker
   } = useValidate();
   return {
-    onInputChange: (key, value) => {
-      const field = state.formState[key];
+    onInputChange: (formName, key, value) => {
+      const field = state.formState[formName][key];
 
       if (field.errorMessage || !field.isPristine) {
-        validateField(key, value);
+        validateField(formName, key, value);
       }
 
-      actions.setFormValue(key, value);
+      actions.setFormValue(formName, key, value);
     },
-    onCheckboxChange: key => {
-      const field = state.formState[key];
+    onCheckboxChange: (formName, key) => {
+      const field = state.formState[formName][key];
 
       if (field.isRequired && !field.isPristine || field.errorMessage) {
-        validateCheckBox(key, !field.value);
+        validateCheckBox(formName, key, !field.value);
       }
 
-      actions.setFormValue(key, !field.value);
-      actions.setFormPristine(key, false);
+      actions.setFormValue(formName, key, !field.value);
+      actions.setFormPristine(formName, key, false);
     },
-    onPickerChange: (key, options) => {
-      validatePicker(key, options);
-      actions.setFormOptions(key, options);
+    onPickerChange: (formName, key, options) => {
+      validatePicker(formName, key, options);
+      actions.setFormOptions(formName, key, options);
     }
   };
 };

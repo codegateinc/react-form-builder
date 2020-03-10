@@ -8,28 +8,28 @@ export const useChange = () => {
     const { validateField, validateCheckBox, validatePicker } = useValidate()
 
     return {
-        onInputChange: (key: string, value: string) => {
-            const field = state.formState[key] as FormInputState
+        onInputChange: (formName: string, key: string, value: string) => {
+            const field = state.formState[formName][key] as FormInputState
 
             if (field.errorMessage || !field.isPristine) {
-                validateField(key, value)
+                validateField(formName, key, value)
             }
 
-            actions.setFormValue(key, value)
+            actions.setFormValue(formName, key, value)
         },
-        onCheckboxChange: (key: string) => {
-            const field = state.formState[key] as FormCheckBoxState
+        onCheckboxChange: (formName: string, key: string) => {
+            const field = state.formState[formName][key] as FormCheckBoxState
 
             if (field.isRequired && !field.isPristine || field.errorMessage) {
-                validateCheckBox(key, !field.value)
+                validateCheckBox(formName, key, !field.value)
             }
 
-            actions.setFormValue(key, !field.value)
-            actions.setFormPristine(key, false)
+            actions.setFormValue(formName, key, !field.value)
+            actions.setFormPristine(formName, key, false)
         },
-        onPickerChange: (key: string, options: Array<FormOption>) => {
-            validatePicker(key, options)
-            actions.setFormOptions(key, options)
+        onPickerChange: (formName: string, key: string, options: Array<FormOption>) => {
+            validatePicker(formName, key, options)
+            actions.setFormOptions(formName, key, options)
         }
     }
 }

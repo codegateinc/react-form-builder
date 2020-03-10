@@ -6,9 +6,10 @@ export const Form: React.FunctionComponent<FormProps> = ({
     children,
     formConfig,
     onError,
-    onSuccess
+    onSuccess,
+    formName
 }) => (
     <Fragment>
-        {renderForm(children, formConfig, onSuccess, onError)}
+        {renderForm(children, formConfig, formName, onSuccess, onError)}
     </Fragment>
 )

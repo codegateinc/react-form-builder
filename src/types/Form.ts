@@ -37,6 +37,7 @@ export type OnError = (errors: Array<KeyValuePair>) => void
 
 export type FormProps = {
     formConfig: FormConfig,
+    formName: string,
     onSuccess?: OnSuccess,
     onError?: OnError
 }
