@@ -19,6 +19,7 @@ export const useChange = () => {
         validateField(formName, key, value);
       }
 
+      actions.setFormPristine(formName, key, false);
       actions.setFormValue(formName, key, value);
     },
     onCheckboxChange: (formName, key) => {
@@ -34,6 +35,7 @@ export const useChange = () => {
     onPickerChange: (formName, key, options) => {
       validatePicker(formName, key, options);
       actions.setFormOptions(formName, key, options);
+      actions.setFormPristine(formName, key, false);
     }
   };
 };

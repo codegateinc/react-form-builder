@@ -15,6 +15,7 @@ export const useChange = () => {
                 validateField(formName, key, value)
             }
 
+            actions.setFormPristine(formName, key, false)
             actions.setFormValue(formName, key, value)
         },
         onCheckboxChange: (formName: string, key: string) => {
@@ -30,6 +31,7 @@ export const useChange = () => {
         onPickerChange: (formName: string, key: string, options: Array<FormOption>) => {
             validatePicker(formName, key, options)
             actions.setFormOptions(formName, key, options)
+            actions.setFormPristine(formName, key, false)
         }
     }
 }

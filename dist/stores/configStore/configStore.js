@@ -13,7 +13,18 @@ export const configStore = () => {
       })),
       setErrorFunction: (key, newOnError) => newOnError && setErrorFunction(prevState => ({ ...prevState,
         [key]: newOnError
-      }))
+      })),
+      clearConfigStore: formKey => {
+        setConfig(prevState => ({ ...prevState,
+          [formKey]: {}
+        }));
+        setSuccessFunction(prevState => ({ ...prevState,
+          [formKey]: () => {}
+        }));
+        setErrorFunction(prevState => ({ ...prevState,
+          [formKey]: () => {}
+        }));
+      }
     },
     state: {
       configStore,

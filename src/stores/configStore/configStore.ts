@@ -31,7 +31,21 @@ export const configStore = () => {
             setErrorFunction: (key: string, newOnError?: OnError) => newOnError && setErrorFunction(prevState => ({
                 ...prevState,
                 [key]: newOnError
-            }))
+            })),
+            clearConfigStore: (formKey: string) => {
+                setConfig(prevState => ({
+                    ...prevState,
+                    [formKey]: {}
+                }))
+                setSuccessFunction(prevState => ({
+                    ...prevState,
+                    [formKey]: () => {}
+                }))
+                setErrorFunction(prevState => ({
+                    ...prevState,
+                    [formKey]: () => {}
+                }))
+            }
         },
         state: {
             configStore,

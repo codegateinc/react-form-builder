@@ -1,5 +1,6 @@
 import { useStore } from 'outstated'
 import { G } from '@codegateinc/g-utils'
+import { SubscribeOnChange } from 'lib/types'
 import { useValidate } from './useValidate'
 import { configStore, formStore } from '../stores'
 import { FieldConfig, FieldState, FormCheckBoxState, FormFieldType, FormInputState, FormPickerState } from '../types'
@@ -20,7 +21,7 @@ export const useForm = <T>(formName: string) => {
                 return G.ifDefined(config.state.configErrorFunction[formName], G.call)
             }
 
-            const parsedForm = G.toPairs<FieldState>(state.formState[formName])
+            const parsedForm = state.formState[formName] && G.toPairs<FieldState>(state.formState[formName])
                 .reduce((acc, [key, object]) => {
                     if (object.type === FormFieldType.Input || object.type === FormFieldType.CheckBox) {
                         const value = (object as FormInputState | FormCheckBoxState).value
@@ -49,8 +50,12 @@ export const useForm = <T>(formName: string) => {
         },
         hasChanges: state.formState[formName] && G.toPairs<FieldState>(state.formState[formName])
             .some(([key, object]) => !object.isPristine),
-        setField: (formFieldName: string, field: FieldConfig) => actions.setFormField(formName, formFieldName, field),
+        setField: (formFieldName: string, field: Omit<FieldConfig, 'type'>) => actions.setFormField(formName, formFieldName, field),
         isFormValid: !validateForm(formName, false)
-            .some(error => error)
+            .some(error => error),
+        getField: (formFieldName: string) => actions.getFormField(formName, formFieldName),
+        subscribe: (formFieldName: string) => ({
+            onChange: (onChange: SubscribeOnChange) => actions.onFormFieldChange(formName, formFieldName, onChange)
+        })
     }
 }

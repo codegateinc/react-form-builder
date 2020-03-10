@@ -21,7 +21,7 @@ export const useForm = formName => {
         return G.ifDefined(config.state.configErrorFunction[formName], G.call);
       }
 
-      const parsedForm = G.toPairs(state.formState[formName]).reduce((acc, [key, object]) => {
+      const parsedForm = state.formState[formName] && G.toPairs(state.formState[formName]).reduce((acc, [key, object]) => {
         if (object.type === FormFieldType.Input || object.type === FormFieldType.CheckBox) {
           const value = object.value;
           return { ...acc,
@@ -42,6 +42,10 @@ export const useForm = formName => {
     },
     hasChanges: state.formState[formName] && G.toPairs(state.formState[formName]).some(([key, object]) => !object.isPristine),
     setField: (formFieldName, field) => actions.setFormField(formName, formFieldName, field),
-    isFormValid: !validateForm(formName, false).some(error => error)
+    isFormValid: !validateForm(formName, false).some(error => error),
+    getField: formFieldName => actions.getFormField(formName, formFieldName),
+    subscribe: formFieldName => ({
+      onChange: onChange => actions.onFormFieldChange(formName, formFieldName, onChange)
+    })
   };
 };

@@ -1,12 +1,22 @@
 import { useState } from 'react'
+import { SubscribeOnChange } from 'lib/types'
 import { FieldConfig, FormOption, FormPickerState, FormState } from '../../types'
 
 export type FormStoreState = {
     [key: string]: FormState
 }
 
+type OnChange = {
+    [key: string]: SubscribeOnChange
+}
+
+type FormStoreOnChange = {
+    [key: string]: OnChange
+}
+
 export const formStore = () => {
     const [ formState, setFormState ] = useState<FormStoreState>({})
+    const [ onChangeForm, setOnChangeForm ] = useState<FormStoreOnChange>({})
 
     return {
         actions: {
@@ -14,16 +24,26 @@ export const formStore = () => {
                 ...prevState,
                 [key]: state
             })),
-            setFormValue: (formKey: string, key: string, value: string | boolean) => setFormState(prevState => ({
-                ...prevState,
-                [formKey]: {
-                    ...prevState[formKey],
-                    [key]: {
-                        ...prevState[formKey][key],
-                        value
-                    }
+            setFormValue: (formKey: string, key: string, value: string | boolean) => {
+                if (!formState[formKey]) {
+                    return
                 }
-            })),
+
+                setFormState(prevState => ({
+                    ...prevState,
+                    [formKey]: {
+                        ...prevState[formKey],
+                        [key]: {
+                            ...prevState[formKey][key],
+                            value
+                        }
+                    }
+                }))
+
+                if (onChangeForm[formKey] && onChangeForm[formKey][key]) {
+                    onChangeForm[formKey][key](value)
+                }
+            },
             setFormError: (formKey: string, key: string, errorMessage?: string) => formState[formKey] && setFormState(prevState => ({
                 ...prevState,
                 [formKey]: {
@@ -34,7 +54,7 @@ export const formStore = () => {
                     }
                 }
             })),
-            setFormPristine: (formKey: string, key: string, isPristine: boolean) => setFormState(prevState => ({
+            setFormPristine: (formKey: string, key: string, isPristine: boolean) => formState[formKey] && setFormState(prevState => ({
                 ...prevState,
                 [formKey]: {
                     ...prevState[formKey],
@@ -44,9 +64,18 @@ export const formStore = () => {
                     }
                 }
             })),
-            setFormOptions: (formKey: string, key: string, newOptions: Array<FormOption>) => setFormState(prevState => {
+            setFormOptions: (formKey: string, key: string, newOptions: Array<FormOption>) => formState[formKey] && setFormState(prevState => {
                 const options = newOptions
                     .map(option => option.value)
+                const changedOptions = (prevState[formKey][key] as FormPickerState).options
+                    .map(option => ({
+                        ...option,
+                        isSelected: options.includes(option.value)
+                    }))
+
+                if (onChangeForm[formKey] && onChangeForm[formKey][key]) {
+                    onChangeForm[formKey][key](changedOptions)
+                }
 
                 return {
                     ...prevState,
@@ -54,29 +83,55 @@ export const formStore = () => {
                         ...prevState[formKey],
                         [key]: {
                             ...prevState[formKey][key],
-                            options: (prevState[formKey][key] as FormPickerState).options
-                                .map(option => ({
-                                    ...option,
-                                    isSelected: options.includes(option.value)
-                                }))
+                            options: changedOptions
                         }
                     }
                 }
             }),
-            setFormField: (formKey: string, key: string, field: FieldConfig) => setFormState(prevState => ({
+            setFormField: (formKey: string, key: string, field: Omit<FieldConfig, 'type'>) => formState[formKey] && setFormState(prevState => ({
                 ...prevState,
                 [formKey]: {
                     ...prevState[formKey],
                     [key]: {
-                        type: field.type,
+                        type: prevState[formKey][key].type,
                         isPristine: true,
                         value: field.value || '',
                         options: field.options || [],
                         isRequired: field.isRequired || false,
-                        disabled: field?.disabled || false
+                        disabled: field.disabled || false
                     }
                 }
-            }))
+            })),
+            getFormField: (formKey: string, key: string) => {
+                if (formState[formKey] && formState[formKey][key]) {
+                    return formState[formKey][key]
+                }
+
+                return {}
+            },
+            onFormFieldChange: (formKey: string, formFieldName: string, onChange: SubscribeOnChange) => {
+                if (onChangeForm[formKey] && onChangeForm[formKey][formFieldName]) {
+                    return
+                }
+
+                setOnChangeForm(prevState => ({
+                    ...prevState,
+                    [formKey]: {
+                        ...prevState[formKey],
+                        [formFieldName]: onChange
+                    }
+                }))
+            },
+            clearFormStore: (formKey: string) => {
+                setFormState(prevState => ({
+                    ...prevState,
+                    [formKey]: {}
+                }))
+                setOnChangeForm(prevState => ({
+                    ...prevState,
+                    [formKey]: {}
+                }))
+            }
         },
         state: {
             formState

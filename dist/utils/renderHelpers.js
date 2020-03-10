@@ -24,6 +24,10 @@ export const renderForm = (children, formConfig, formName, onSuccess, onError) =
     actions.setErrorFunction(formName, onError);
     actions.setSuccessFunction(formName, onSuccess);
     form.actions.setFormState(formName, formState);
+    return () => {
+      actions.clearConfigStore(formName);
+      form.actions.clearFormStore(formName);
+    };
   }, []);
   useEffect(() => {
     if (!state.configStore || !state.configStore[formName]) {
