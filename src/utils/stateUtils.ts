@@ -103,7 +103,7 @@ export const handleFormConfigChange = (prevConfig: FormConfig, formConfig: FormC
                         return [key, validationRules]
                     }
 
-                    if (equals(value, field[key])) {
+                    if (equals(value, field[key]) || key === 'liveParser') {
                         return [key, value]
                     }
 
