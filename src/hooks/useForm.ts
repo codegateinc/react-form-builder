@@ -2,6 +2,7 @@ import { useStore } from 'outstated'
 import { G } from '@codegateinc/g-utils'
 import { SubscribeOnChange } from 'lib/types'
 import { useValidate } from './useValidate'
+import { prepareFormInitialState } from '../utils'
 import { configStore, formStore } from '../stores'
 import { FieldConfig, FieldState, FormCheckBoxState, FormFieldType, FormInputState, FormPickerState } from '../types'
 
@@ -56,6 +57,7 @@ export const useForm = <T>(formName: string) => {
         getField: (formFieldName: string) => actions.getFormField(formName, formFieldName),
         subscribe: (formFieldName: string) => ({
             onChange: (onChange: SubscribeOnChange) => actions.onFormFieldChange(formName, formFieldName, onChange)
-        })
+        }),
+        restoreToInitial: () => config.state.configStore && actions.setFormState(formName, prepareFormInitialState(config.state.configStore[formName]))
     }
 }

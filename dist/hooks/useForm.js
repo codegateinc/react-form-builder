@@ -1,6 +1,7 @@
 import { useStore } from 'outstated';
 import { G } from '@codegateinc/g-utils';
 import { useValidate } from './useValidate';
+import { prepareFormInitialState } from '../utils';
 import { configStore, formStore } from '../stores';
 import { FormFieldType } from '../types';
 export const useForm = formName => {
@@ -46,6 +47,7 @@ export const useForm = formName => {
     getField: formFieldName => actions.getFormField(formName, formFieldName),
     subscribe: formFieldName => ({
       onChange: onChange => actions.onFormFieldChange(formName, formFieldName, onChange)
-    })
+    }),
+    restoreToInitial: () => config.state.configStore && actions.setFormState(formName, prepareFormInitialState(config.state.configStore[formName]))
   };
 };
