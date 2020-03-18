@@ -73,6 +73,8 @@ export const prepareFormInitialState = (formConfig: FormConfig, prevState?: Form
 
 export const handleFormConfigChange = (prevConfig: FormConfig, formConfig: FormConfig) => {
     let hasChanges = false
+    const liveParserConfigKey = 'liveParser'
+    const validationRulesConfigKey = 'validationRules'
 
     const configToPairs = G.toPairs<FieldConfig>(prevConfig)
         .map(([ fieldName, config ]) => {
@@ -88,7 +90,7 @@ export const handleFormConfigChange = (prevConfig: FormConfig, formConfig: FormC
                         return [key, value]
                     }
 
-                    if (key === 'validationRules') {
+                    if (key === validationRulesConfigKey) {
                         const validationRules = G.toPairs<FormValidationRule>(value)
                             .map(([ , rule ], index) => {
                                 if (field.validationRules && rule.errorMessage !== field.validationRules[index].errorMessage) {
@@ -103,7 +105,7 @@ export const handleFormConfigChange = (prevConfig: FormConfig, formConfig: FormC
                         return [key, validationRules]
                     }
 
-                    if (equals(value, field[key]) || key === 'liveParser') {
+                    if (equals(value, field[key]) || key === liveParserConfigKey) {
                         return [key, value]
                     }
 

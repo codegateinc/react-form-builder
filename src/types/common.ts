@@ -1,4 +1,4 @@
-import { FormOption } from 'types'
+import { FormOption } from './Form'
 
 export type VoidFunction = () => void
 // tslint:disable-next-line:no-any

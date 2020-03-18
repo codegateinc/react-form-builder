@@ -1,6 +1,6 @@
 import { useStore } from 'outstated'
 import { G } from '@codegateinc/g-utils'
-import { SubscribeOnChange } from 'lib/types'
+import { SubscribeOnChange } from 'types'
 import { useValidate } from './useValidate'
 import { prepareFormInitialState } from '../utils'
 import { configStore, formStore } from '../stores'

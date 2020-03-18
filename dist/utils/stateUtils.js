@@ -43,6 +43,8 @@ export const prepareFormInitialState = (formConfig, prevState) => {
 };
 export const handleFormConfigChange = (prevConfig, formConfig) => {
   let hasChanges = false;
+  const liveParserConfigKey = 'liveParser';
+  const validationRulesConfigKey = 'validationRules';
   const configToPairs = G.toPairs(prevConfig).map(([fieldName, config]) => {
     if (config?.isRequired && !config?.validationRules) {
       throw new Error('validationRules are required if field isRequired');
@@ -55,7 +57,7 @@ export const handleFormConfigChange = (prevConfig, formConfig) => {
         return [key, value];
       }
 
-      if (key === 'validationRules') {
+      if (key === validationRulesConfigKey) {
         const validationRules = G.toPairs(value).map(([, rule], index) => {
           if (field.validationRules && rule.errorMessage !== field.validationRules[index].errorMessage) {
             hasChanges = true;
@@ -67,7 +69,7 @@ export const handleFormConfigChange = (prevConfig, formConfig) => {
         return [key, validationRules];
       }
 
-      if (equals(value, field[key]) || key === 'liveParser') {
+      if (equals(value, field[key]) || key === liveParserConfigKey) {
         return [key, value];
       }
 

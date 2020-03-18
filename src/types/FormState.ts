@@ -1,4 +1,4 @@
-import { KeyValuePair } from 'lib/types'
+import { KeyValuePair } from './common'
 import { FormFieldType, FormOption } from './Form'
 
 export type FormInputState = {

@@ -1,4 +1,4 @@
-import { KeyValuePair } from 'lib/types'
+import { KeyValuePair } from './common'
 
 export enum FormFieldType {
     Input = 0,

@@ -1,5 +1,5 @@
 import React from 'react'
-import { VoidFunction } from 'lib/types'
+import { VoidFunction } from './common'
 
 export type CheckboxComponentProps = {
     value: boolean,

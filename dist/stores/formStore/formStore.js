@@ -1,4 +1,5 @@
 import { useState } from 'react';
+import { FormFieldType } from '../../types';
 export const formStore = () => {
   const [formState, setFormState] = useState({});
   const [onChangeForm, setOnChangeForm] = useState({});
@@ -74,6 +75,20 @@ export const formStore = () => {
         }
 
         return {};
+      },
+      getFieldValue: (formKey, key) => {
+        if (!formState[formKey] || !formState[formKey][key]) {
+          return {};
+        }
+
+        const formField = formState[formKey][key];
+
+        if (formField.type === FormFieldType.Picker) {
+          const castedFormField = formField;
+          return castedFormField.options.filter(option => option.isSelected);
+        }
+
+        return formField.value;
       },
       onFormFieldChange: (formKey, formFieldName, onChange) => {
         if (onChangeForm[formKey] && onChangeForm[formKey][formFieldName]) {
