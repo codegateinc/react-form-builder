@@ -9,11 +9,12 @@ export const prepareFormInitialState = (formConfig, prevState) => {
 
     if (config.type === FormFieldType.Input || config.type === FormFieldType.CheckBox) {
       const prevField = prevState && prevState[fieldName];
+      const areValuesSame = prevField?.value === config.value;
       return [fieldName, {
-        value: prevField?.value || config?.value || '',
+        value: areValuesSame ? prevField?.value : config.value || '',
         isRequired: config?.isRequired || false,
         isPristine: true,
-        disabled: config.disabled && config.disabled() || false,
+        disabled: config?.disabled || false,
         type: config.type,
         errorMessage: undefined
       }];
@@ -31,7 +32,7 @@ export const prepareFormInitialState = (formConfig, prevState) => {
       return [fieldName, {
         isRequired: config?.isRequired || false,
         isPristine: true,
-        disabled: config.disabled && config.disabled() || false,
+        disabled: config?.disabled || false,
         type: config.type,
         errorMessage: undefined,
         options: areOptionsSame ? prevField?.options : config.options
@@ -42,6 +43,8 @@ export const prepareFormInitialState = (formConfig, prevState) => {
 };
 export const handleFormConfigChange = (prevConfig, formConfig) => {
   let hasChanges = false;
+  const liveParserConfigKey = 'liveParser';
+  const validationRulesConfigKey = 'validationRules';
   const configToPairs = G.toPairs(prevConfig).map(([fieldName, config]) => {
     if (config?.isRequired && !config?.validationRules) {
       throw new Error('validationRules are required if field isRequired');
@@ -50,7 +53,11 @@ export const handleFormConfigChange = (prevConfig, formConfig) => {
     const checkedField = G.fromPairs(G.toPairs(config).map(([key, value]) => {
       const field = formConfig[fieldName];
 
-      if (key === 'validationRules') {
+      if (!field) {
+        return [key, value];
+      }
+
+      if (key === validationRulesConfigKey) {
         const validationRules = G.toPairs(value).map(([, rule], index) => {
           if (field.validationRules && rule.errorMessage !== field.validationRules[index].errorMessage) {
             hasChanges = true;
@@ -62,7 +69,7 @@ export const handleFormConfigChange = (prevConfig, formConfig) => {
         return [key, validationRules];
       }
 
-      if (equals(value, field[key])) {
+      if (equals(value, field[key]) || key === liveParserConfigKey) {
         return [key, value];
       }
 

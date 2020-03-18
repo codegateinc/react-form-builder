@@ -35,6 +35,7 @@ functions that returns JSX
 
     const form = (
         <Form
+            formName="uniqueFormName"
             formConfig={{
                 inputName: {
                     type: FormTypes.FormFieldType.Input,
@@ -105,6 +106,28 @@ functions that returns JSX
 ```
 
 ## Props
+
+#### Form
+
+|props     |                 type                                      | description
+|----------|-----------------------------------------------------------|------------
+|formName  |`formName: string`                                         |unique formName
+|formConfig|`formConfig: KeyValuePair<FormConfig>`                     |form config that includes initial values, options, validators, and types of fields
+|onSuccess |`onSuccess?: form => void`                                 |optional function that provides parsed form after it has been submitted and is valid
+|onError   |`onError?: Function`                                       |optional function that is invoked when form is not valid and has been submitted
+
+##### FormConfig
+
+######FormConfig is an Object with Config assigned to each key
+
+|props          |                 type                                      | description
+|---------------|-----------------------------------------------------------|------------
+|value          |`value?: string / number / boolean`                        |value defines initial values of input and checkbox
+|type           |`type: FormFieldType`                                      |type is required prop that defines type of field
+|isRequired     |`isRequired?: boolean`                                     |prop that defines if field should be validated, if true, you must provide validationRules
+|validationRules|`validationRules?: Array<FormValidationRule>`              |defines validation rules and error message to each rule
+|options        |`optiions?: Array<FormOption>`                             |options defines initial values of picker field
+|disabled       |`disabled?: boolean`                                       |defines if field is disabled or not
 
 #### Field
 

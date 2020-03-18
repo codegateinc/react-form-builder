@@ -1,9 +1,10 @@
 import { useStore } from 'outstated';
 import { G } from '@codegateinc/g-utils';
 import { useValidate } from './useValidate';
+import { prepareFormInitialState } from '../utils';
 import { configStore, formStore } from '../stores';
 import { FormFieldType } from '../types';
-export const useForm = () => {
+export const useForm = formName => {
   const {
     state,
     actions
@@ -14,14 +15,14 @@ export const useForm = () => {
   } = useValidate();
   return {
     submitForm: () => {
-      const validated = validateForm();
+      const validated = validateForm(formName);
       const hasAnyError = validated.some(value => value);
 
       if (hasAnyError) {
-        return G.ifDefined(config.state.errorFunction, G.call);
+        return G.ifDefined(config.state.configErrorFunction[formName], G.call);
       }
 
-      const parsedForm = G.toPairs(state.formState).reduce((acc, [key, object]) => {
+      const parsedForm = state.formState[formName] && G.toPairs(state.formState[formName]).reduce((acc, [key, object]) => {
         if (object.type === FormFieldType.Input || object.type === FormFieldType.CheckBox) {
           const value = object.value;
           return { ...acc,
@@ -38,10 +39,16 @@ export const useForm = () => {
 
         return acc;
       }, {});
-      return G.ifDefined(config.state.successFunction, fn => fn(parsedForm));
+      return G.ifDefined(config.state.configSuccessFunction[formName], fn => fn(parsedForm));
     },
-    hasChanges: G.toPairs(state.formState).some(([key, object]) => !object.isPristine),
-    setField: (formFieldName, field) => actions.setFormField(formFieldName, field),
-    isFormValid: !validateForm(false).some(error => error)
+    hasChanges: state.formState[formName] && G.toPairs(state.formState[formName]).some(([key, object]) => !object.isPristine),
+    setField: (formFieldName, field) => actions.setFormField(formName, formFieldName, field),
+    isFormValid: !validateForm(formName, false).some(error => error),
+    getField: formFieldName => actions.getFormField(formName, formFieldName),
+    getFieldValue: formFieldName => actions.getFieldValue(formName, formFieldName),
+    subscribe: formFieldName => ({
+      onChange: onChange => actions.onFormFieldChange(formName, formFieldName, onChange)
+    }),
+    restoreToInitial: () => config.state.configStore && actions.setFormState(formName, prepareFormInitialState(config.state.configStore[formName]))
   };
 };

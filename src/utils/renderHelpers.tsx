@@ -1,5 +1,4 @@
 import React, { useEffect } from 'react'
-import { G } from '@codegateinc/g-utils'
 import { useStore } from 'outstated'
 import { prepareFormInitialState, handleFormConfigChange } from './stateUtils'
 import { useEvents } from '../hooks'
@@ -21,6 +20,7 @@ import {
 export const renderForm = (
     children: React.ReactNode,
     formConfig: FormConfig,
+    formName: string,
     onSuccess?: OnSuccess,
     onError?: OnError
 ) => {
@@ -38,33 +38,38 @@ export const renderForm = (
     useEffect(() => {
         const formState = prepareFormInitialState(formConfig)
 
-        actions.setConfig(formConfig)
-        actions.setErrorFunction(() => onError)
-        actions.setSuccessFunction(() => onSuccess)
-        form.actions.setFormState(formState)
+        actions.setConfig(formName, formConfig)
+        actions.setErrorFunction(formName, onError)
+        actions.setSuccessFunction(formName, onSuccess)
+        form.actions.setFormState(formName, formState)
+
+        return () => {
+            actions.clearConfigStore(formName)
+            form.actions.clearFormStore(formName)
+        }
     }, [])
 
     useEffect(() => {
-        if (!state.config) {
+        if (!state.configStore || !state.configStore[formName]) {
             return
         }
 
-        const { newConfig, hasChanges } = handleFormConfigChange(state.config, formConfig)
+        const { newConfig, hasChanges } = handleFormConfigChange(state.configStore[formName], formConfig)
 
         if (hasChanges) {
-            const newState = prepareFormInitialState(formConfig, form.state.formState)
+            const newState = prepareFormInitialState(formConfig, form.state.formState[formName])
 
-            actions.setConfig(newConfig)
-            actions.setErrorFunction(() => onError)
-            actions.setSuccessFunction(() => onSuccess)
-            form.actions.setFormState(newState)
+            actions.setConfig(formName, newConfig)
+            actions.setErrorFunction(formName, onError)
+            actions.setSuccessFunction(formName, onSuccess)
+            form.actions.setFormState(formName, newState)
         }
     }, [formConfig, form])
 
-    return React.Children.map(children, renderChild)
+    return React.Children.map(children, child => renderChild(child, formName))
 }
 
-const renderChild = (child: React.ReactNode) => {
+const renderChild = (child: React.ReactNode, formName: string) => {
     if (typeof child === 'string' || typeof child === 'number' || typeof child === null) {
         return child
     }
@@ -77,17 +82,18 @@ const renderChild = (child: React.ReactNode) => {
         const { input } = useEvents()
         const inputChild = child as React.ReactElement<InputProps>
         const key = inputChild.props.formFieldName
-        const inputState = state.formState[key] as FormInputState
+        const formState = state.formState[formName]
+        const inputState = formState ? formState[key] as FormInputState : undefined
 
         return React.cloneElement<InputProps>(inputChild, {
             ...inputChild.props,
             component: () => inputChild.props.component({
                 value: inputState?.value || '',
-                onChangeText: text => input.onChange(key, text),
-                onBlur: () => input.onBlur(key, inputState.value),
+                onChangeText: text => input.onChange(formName, key, text),
+                onBlur: () => input.onBlur(formName, key, inputState?.value || ''),
                 errorMessage: inputState?.errorMessage,
-                disabled: inputState?.disabled,
-                isPristine: inputState?.isPristine
+                disabled: inputState?.disabled || false,
+                isPristine: inputState?.isPristine || true
             })
         })
     }
@@ -97,16 +103,17 @@ const renderChild = (child: React.ReactNode) => {
         const { checkBox } = useEvents()
         const checkBoxChild = child as React.ReactElement<CheckBoxProps>
         const key = checkBoxChild.props.formFieldName
-        const checkBoxState = state.formState[key] as FormCheckBoxState
+        const formState = state.formState[formName]
+        const checkBoxState = formState ? formState[key] as FormCheckBoxState : undefined
 
         return React.cloneElement<CheckBoxProps>(checkBoxChild, {
             ...checkBoxChild.props,
             component: () => checkBoxChild.props.component({
                 value: checkBoxState?.value || false,
-                onChange: () => checkBox.onChange(key),
+                onChange: () => checkBox.onChange(formName, key),
                 errorMessage: checkBoxState?.errorMessage,
-                disabled: checkBoxState?.disabled,
-                isPristine: checkBoxState?.isPristine
+                disabled: checkBoxState?.disabled || false,
+                isPristine: checkBoxState?.isPristine || true
             })
         })
     }
@@ -116,15 +123,16 @@ const renderChild = (child: React.ReactNode) => {
         const { picker } = useEvents()
         const pickerChild = child as React.ReactElement<PickerProps>
         const key = pickerChild.props.formFieldName
-        const pickerState = state.formState[key] as FormPickerState
+        const formState = state.formState[formName]
+        const pickerState = formState ? formState[key] as FormPickerState : undefined
 
         return React.cloneElement<PickerProps>(pickerChild, {
             ...pickerChild.props,
             component: () => pickerChild.props.component({
-                onChange: (options: Array<FormOption>) => picker.onChange(key, options),
+                onChange: (options: Array<FormOption>) => picker.onChange(formName, key, options),
                 errorMessage: pickerState?.errorMessage,
-                disabled: pickerState?.disabled,
-                isPristine: pickerState?.isPristine,
+                disabled: pickerState?.disabled || false,
+                isPristine: pickerState?.isPristine || true,
                 options: pickerState?.options || []
             })
         })
@@ -133,7 +141,7 @@ const renderChild = (child: React.ReactNode) => {
     const reactElementChildren = reactElementChild.props.children
 
     if (reactElementChildren) {
-        const newChildren = React.Children.map(reactElementChildren, renderChild)
+        const newChildren = React.Children.map(reactElementChildren, child => renderChild(child, formName))
 
         return React.cloneElement(reactElementChild, reactElementChild.props, newChildren)
     }

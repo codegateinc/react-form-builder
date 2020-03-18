@@ -1,25 +1,29 @@
 import { renderHook, act } from '@testing-library/react-hooks'
-import { configStore } from './configStore'
-import { FormConfig, FormFieldType } from '../../types'
+import { configStore, ConfigStoreState } from './configStore'
+import { FormFieldType } from '../../types'
 
 describe('[Stores]: ConfigStore', () => {
     it('should render itself', () => {
         const { result } = renderHook(configStore)
 
-        expect(result.current.state.config).toEqual(undefined)
+        expect(result.current.state.configStore).toEqual(undefined)
     })
 
     it('should setConfig', () => {
         const { result } = renderHook(configStore)
-        const expectedConfig: FormConfig = {
-            name: {
+        const name = 'name'
+        const config = {
+            config: {
                 value: 'initial',
                 type: FormFieldType.Input
             }
         }
+        const expectedConfig: ConfigStoreState = {
+            [name]: config
+        }
 
-        act(() => result.current.actions.setConfig(expectedConfig))
+        act(() => result.current.actions.setConfig(name, config))
 
-        expect(result.current.state.config).toEqual(expectedConfig)
+        expect(result.current.state.configStore).toEqual(expectedConfig)
     })
 })

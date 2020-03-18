@@ -8,15 +8,15 @@ export const useBlur = () => {
     validateField
   } = useValidate();
   return {
-    onInputBlur: (key, value) => {
-      const field = form.state.formState[key];
-      const configField = config.state.config && config.state.config[key];
+    onInputBlur: (formName, key, value) => {
+      const field = form.state.formState[formName][key];
+      const configField = config.state.configStore && config.state.configStore[formName][key];
 
       if (field.isRequired || value !== configField?.value) {
-        form.actions.setFormPristine(key, false);
+        form.actions.setFormPristine(formName, key, false);
       }
 
-      validateField(key, value);
+      validateField(formName, key, value);
     }
   };
 };

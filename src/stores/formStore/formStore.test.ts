@@ -1,9 +1,10 @@
 import { act, renderHook } from '@testing-library/react-hooks'
-import { formStore } from './formStore'
-import { FormFieldType, FormState } from '../../types'
+import { formStore, FormStoreState } from './formStore'
+import { FormFieldType } from '../../types'
 
 const key = 'name'
-const initialFormState: FormState = {
+const formName = 'formName'
+const formState = {
     [key]: {
         value: 'initial',
         isRequired: false,
@@ -11,6 +12,9 @@ const initialFormState: FormState = {
         type: FormFieldType.Input,
         disabled: false
     }
+}
+const initialFormState: FormStoreState = {
+    [formName]: formState
 }
 
 describe('[Stores]: FormStore', () => {
@@ -23,7 +27,7 @@ describe('[Stores]: FormStore', () => {
     it('should setFormState', () => {
         const { result } = renderHook(formStore)
 
-        act(() => result.current.actions.setFormState(initialFormState))
+        act(() => result.current.actions.setFormState(formName, formState))
 
         expect(result.current.state.formState).toEqual(initialFormState)
     })
@@ -31,18 +35,19 @@ describe('[Stores]: FormStore', () => {
     it('should setFormValue', () => {
         const newValue = 'changed'
         const { result } = renderHook(formStore)
-        const changedFormState: FormState = {
-            [key]: {
-                value: newValue,
-                isRequired: false,
-                isPristine: false,
-                disabled: false,
-                type: FormFieldType.Input,
+        const changedFormState: FormStoreState = {
+            ...initialFormState,
+            [formName]: {
+                ...initialFormState[formName],
+                [key]: {
+                    ...initialFormState[formName][key],
+                    value: newValue
+                }
             }
         }
 
-        act(() => result.current.actions.setFormState(initialFormState))
-        act(() => result.current.actions.setFormValue(key, newValue))
+        act(() => result.current.actions.setFormState(formName, formState))
+        act(() => result.current.actions.setFormValue(formName, key, newValue))
 
         expect(result.current.state.formState).toEqual(changedFormState)
     })
@@ -50,19 +55,19 @@ describe('[Stores]: FormStore', () => {
     it('should setFormError', () => {
         const errorMessage = 'error'
         const { result } = renderHook(formStore)
-        const changedFormState: FormState = {
-            [key]: {
-                value: 'initial',
-                isRequired: false,
-                isPristine: false,
-                disabled: false,
-                type: FormFieldType.Input,
-                errorMessage
+        const changedFormState: FormStoreState = {
+            ...initialFormState,
+            [formName]: {
+                ...initialFormState[formName],
+                [key]: {
+                    ...initialFormState[formName][key],
+                    errorMessage
+                }
             }
         }
 
-        act(() => result.current.actions.setFormState(initialFormState))
-        act(() => result.current.actions.setFormError(key, errorMessage))
+        act(() => result.current.actions.setFormState(formName, formState))
+        act(() => result.current.actions.setFormError(formName, key, errorMessage))
 
         expect(result.current.state.formState).toEqual(changedFormState)
     })
