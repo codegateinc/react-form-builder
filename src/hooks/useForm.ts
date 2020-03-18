@@ -1,10 +1,9 @@
 import { useStore } from 'outstated'
 import { G } from '@codegateinc/g-utils'
-import { SubscribeOnChange } from 'types'
 import { useValidate } from './useValidate'
 import { prepareFormInitialState } from '../utils'
 import { configStore, formStore } from '../stores'
-import { FieldConfig, FieldState, FormCheckBoxState, FormFieldType, FormInputState, FormPickerState } from '../types'
+import { FieldConfig, FieldState, FormCheckBoxState, FormFieldType, FormInputState, FormPickerState, SubscribeOnChange } from '../types'
 
 export const useForm = <T>(formName: string) => {
     const { state, actions } = useStore(formStore)
@@ -55,8 +54,9 @@ export const useForm = <T>(formName: string) => {
         isFormValid: !validateForm(formName, false)
             .some(error => error),
         getField: (formFieldName: string) => actions.getFormField(formName, formFieldName),
+        getFieldValue: (formFieldName: string) => actions.getFieldValue(formName, formFieldName),
         subscribe: (formFieldName: string) => ({
-            onChange: (onChange: SubscribeOnChange) => actions.onFormFieldChange(formName, formFieldName, onChange)
+            onChange: <T>(onChange: SubscribeOnChange<T>) => actions.onFormFieldChange(formName, formFieldName, onChange)
         }),
         restoreToInitial: () => config.state.configStore && actions.setFormState(formName, prepareFormInitialState(config.state.configStore[formName]))
     }

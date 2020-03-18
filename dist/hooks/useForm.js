@@ -45,6 +45,7 @@ export const useForm = formName => {
     setField: (formFieldName, field) => actions.setFormField(formName, formFieldName, field),
     isFormValid: !validateForm(formName, false).some(error => error),
     getField: formFieldName => actions.getFormField(formName, formFieldName),
+    getFieldValue: formFieldName => actions.getFieldValue(formName, formFieldName),
     subscribe: formFieldName => ({
       onChange: onChange => actions.onFormFieldChange(formName, formFieldName, onChange)
     }),

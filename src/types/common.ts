@@ -5,4 +5,4 @@ export type VoidFunction = () => void
 export type KeyValuePair<T = any> = {
     [key: string]: T
 }
-export type SubscribeOnChange = (value: string | boolean | Array<FormOption>) => void
+export type SubscribeOnChange<T = any> = (value: T) => void

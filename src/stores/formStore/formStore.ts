@@ -1,5 +1,4 @@
 import { useState } from 'react'
-import { SubscribeOnChange } from 'types'
 import {
     FormState,
     FormOption,
@@ -7,6 +6,7 @@ import {
     FormFieldType,
     FormInputState,
     FormPickerState,
+    SubscribeOnChange,
     FormCheckBoxState
 } from '../../types'
 
