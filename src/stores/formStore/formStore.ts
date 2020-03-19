@@ -3,11 +3,8 @@ import {
     FormState,
     FormOption,
     FieldConfig,
-    FormFieldType,
-    FormInputState,
     FormPickerState,
-    SubscribeOnChange,
-    FormCheckBoxState
+    SubscribeOnChange
 } from '../../types'
 
 export type FormStoreState = {
@@ -116,21 +113,6 @@ export const formStore = () => {
                 }
 
                 return {}
-            },
-            getFieldValue: (formKey: string, key: string) => {
-                if (!formState[formKey] || !formState[formKey][key]) {
-                    return {}
-                }
-
-                const formField = formState[formKey][key]
-
-                if (formField.type === FormFieldType.Picker) {
-                    const castedFormField = formField as FormPickerState
-
-                    return castedFormField.options.filter(option => option.isSelected)
-                }
-
-                return (formField as FormInputState | FormCheckBoxState).value
             },
             onFormFieldChange: (formKey: string, formFieldName: string, onChange: SubscribeOnChange) => {
                 if (onChangeForm[formKey] && onChangeForm[formKey][formFieldName]) {
