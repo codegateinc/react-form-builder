@@ -3,3 +3,4 @@ export type VoidFunction = () => void
 export type KeyValuePair<T = any> = {
     [key: string]: T
 }
+export type SubscribeOnChange<T = any> = (value: T) => void
