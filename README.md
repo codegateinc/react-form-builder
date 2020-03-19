@@ -128,6 +128,7 @@ functions that returns JSX
 |validationRules|`validationRules?: Array<FormValidationRule>`              |defines validation rules and error message to each rule
 |options        |`optiions?: Array<FormOption>`                             |options defines initial values of picker field
 |disabled       |`disabled?: boolean`                                       |defines if field is disabled or not
+|liveParser     |`liveParse?: (value: ValidationValue) => ValidationValue`  |if defined, it is called on each field change, which the function is related to
 
 #### Field
 
@@ -139,3 +140,11 @@ functions that returns JSX
 |         |`component(props: CheckboxComponentProps): React.ReactNode`|render function
 |Picker   |`formFieldName: string`                                    |field name the same as in `formConfig`
 |         |`component(props: PickerComponentProps): React.ReactNode`  |render function
+
+#### FormTypes
+
+|   name            |type               |              value
+|-------------------|-------------------|----------------------------------
+|FormFieldType      |enum               |`Input, Picker, CheckBox`
+|FormValidationRule |type               |`{ errorMessage: string, validationFunction: (value: ValidationValue) => boolean}`
+|ValidationValue    |type               |`string \| number \| boolean \| Array<FormOption>`

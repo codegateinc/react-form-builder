@@ -54,7 +54,6 @@ export const useForm = <T>(formName: string) => {
         isFormValid: !validateForm(formName, false)
             .some(error => error),
         getField: (formFieldName: string) => actions.getFormField(formName, formFieldName),
-        getFieldValue: (formFieldName: string) => actions.getFieldValue(formName, formFieldName),
         subscribe: (formFieldName: string) => ({
             onChange: <T>(onChange: SubscribeOnChange<T>) => actions.onFormFieldChange(formName, formFieldName, onChange)
         }),
