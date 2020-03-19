@@ -1,5 +1,16 @@
 import React from 'react'
-import { CheckBoxProps, FieldConfig, FormProps, InputProps, PickerProps, VoidFunction } from './types'
+import {
+    FormProps,
+    InputProps,
+    PickerProps,
+    FieldConfig,
+    VoidFunction,
+    CheckBoxProps,
+    FormInputState,
+    FormPickerState,
+    FormCheckBoxState,
+    SubscribeOnChange
+} from './types'
 import * as FormTypes from './types'
 
 export namespace Field {
@@ -9,11 +20,16 @@ export namespace Field {
 }
 export const Form: React.FunctionComponent<FormProps> = () => {}
 export const FormProvider: React.FunctionComponent = () => {}
-export const useForm = () => ({
+export const useForm = (formName: string) => ({
     submitForm: VoidFunction,
     hasChanges: () => boolean,
     setField: (formFieldName: string, field: FieldConfig) => {},
-    isFormValid: boolean
+    isFormValid: boolean,
+    getField: (formFieldName: string) => FormInputState | FormCheckBoxState | FormPickerState,
+    restoreToInitial: VoidFunction,
+    subscribe: (formFieldName: string) => ({
+        onChange: <T>(onChange: SubscribeOnChange<T>) => {}
+    })
 })
 export {
     FormTypes
