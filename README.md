@@ -1,6 +1,7 @@
 # @codegateinc/react-form-builder
 
-@codegateinc/react-form-builder is a javascript library that helps you create your own form in simply way
+@codegateinc/react-form-builder is a javascript library that helps you create your own form in simple way.
+It can be used in React and React Native without any worry about compatibility.
 
 ## Installation
 
@@ -8,7 +9,7 @@
 
 ## Usage
 
-### 1. First step is to wrap your whole app in FormProvider
+### 1. First step is to wrap your app in FormProvider
 
 ```
     import { FormProvider } from 'react-form-builder'
@@ -118,7 +119,7 @@ functions that returns JSX
 
 ##### FormConfig
 
-######FormConfig is an Object with FieldConfig assigned to each key
+###### FormConfig is an Object with FieldConfig assigned to each key
 
 ###### FieldConfig
 
