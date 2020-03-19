@@ -1,5 +1,7 @@
 # @codegateinc/react-form-builder
 
+## Supports both React and React native
+
 @codegateinc/react-form-builder is a javascript library that helps you create your own form in the simple way.
 It can be used in React and React Native without any worry about compatibility.
 
