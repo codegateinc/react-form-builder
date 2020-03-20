@@ -35,10 +35,12 @@ export type FormConfig = KeyValuePair<FieldConfig>
 // tslint:disable-next-line:no-any
 export type OnSuccess = (form: any) => void
 export type OnError = (errors: Array<KeyValuePair>) => void
-
 export type FormProps = {
+    formName: string
+}
+
+export interface UseFormProps extends FormProps {
     formConfig: FormConfig,
-    formName: string,
     onSuccess?: OnSuccess,
     onError?: OnError
 }

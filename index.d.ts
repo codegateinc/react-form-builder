@@ -5,6 +5,7 @@ import {
     PickerProps,
     FieldConfig,
     VoidFunction,
+    UseFormProps,
     CheckBoxProps,
     FormInputState,
     FormPickerState,
@@ -20,7 +21,7 @@ export namespace Field {
 }
 export const Form: React.FunctionComponent<FormProps> = () => {}
 export const FormProvider: React.FunctionComponent = () => {}
-export const useForm = (formName: string) => ({
+export const useForm = (config: UseFormProps) => ({
     submitForm: VoidFunction,
     hasChanges: () => boolean,
     setField: (formFieldName: string, field: FieldConfig) => {},
@@ -29,7 +30,8 @@ export const useForm = (formName: string) => ({
     restoreToInitial: VoidFunction,
     subscribe: (formFieldName: string) => ({
         onChange: <T>(onChange: SubscribeOnChange<T>) => {}
-    })
+    }),
+    isFormReady: boolean
 })
 export {
     FormTypes

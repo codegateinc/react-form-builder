@@ -1,22 +1,12 @@
 import { useState } from 'react'
-import { FormConfig, OnError, OnSuccess } from '../../types'
+import { FormConfig } from '../../types'
 
 export type ConfigStoreState = {
     [key: string]: FormConfig
 }
 
-type ConfigStoreOnSuccess = {
-    [key: string]: OnSuccess
-}
-
-type ConfigStoreOnError = {
-    [key: string]: OnError
-}
-
 export const configStore = () => {
-    const [ configStore, setConfig ] = useState<ConfigStoreState>()
-    const [ configSuccessFunction, setSuccessFunction ] = useState<ConfigStoreOnSuccess>({})
-    const [ configErrorFunction, setErrorFunction ] = useState<ConfigStoreOnError>({})
+    const [ configStore, setConfig ] = useState<ConfigStoreState>({})
 
     return {
         actions: {
@@ -24,33 +14,13 @@ export const configStore = () => {
                 ...prevState,
                 [key]: newConfig
             })),
-            setSuccessFunction: (key: string, newOnSuccess?: OnSuccess) => newOnSuccess && setSuccessFunction(prevState => ({
+            clearConfigStore: (formKey: string) => setConfig(prevState => ({
                 ...prevState,
-                [key]: newOnSuccess
-            })),
-            setErrorFunction: (key: string, newOnError?: OnError) => newOnError && setErrorFunction(prevState => ({
-                ...prevState,
-                [key]: newOnError
-            })),
-            clearConfigStore: (formKey: string) => {
-                setConfig(prevState => ({
-                    ...prevState,
-                    [formKey]: {}
-                }))
-                setSuccessFunction(prevState => ({
-                    ...prevState,
-                    [formKey]: () => {}
-                }))
-                setErrorFunction(prevState => ({
-                    ...prevState,
-                    [formKey]: () => {}
-                }))
-            }
+                [formKey]: {}
+            }))
         },
         state: {
-            configStore,
-            configSuccessFunction,
-            configErrorFunction
+            configStore
         }
     }
 }

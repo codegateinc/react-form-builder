@@ -1,67 +1,28 @@
-import React, { useEffect } from 'react';
+import React from 'react';
 import { useStore } from 'outstated';
-import { prepareFormInitialState, handleFormConfigChange } from './stateUtils';
 import { useEvents } from '../hooks';
-import { configStore, formStore } from '../stores';
+import { formStore } from '../stores';
 import { CheckBox, Input, Picker } from '../components';
-export const renderForm = (children, formConfig, formName, onSuccess, onError) => {
+export const renderForm = (children, formName) => {
   if (!children) {
     throw new Error('children are mandatory');
   }
 
-  if (!formConfig) {
-    throw new Error('form config is required');
-  }
-
-  const {
-    state,
-    actions
-  } = useStore(configStore);
-  const form = useStore(formStore);
-  useEffect(() => {
-    const formState = prepareFormInitialState(formConfig);
-    actions.setConfig(formName, formConfig);
-    actions.setErrorFunction(formName, onError);
-    actions.setSuccessFunction(formName, onSuccess);
-    form.actions.setFormState(formName, formState);
-    return () => {
-      actions.clearConfigStore(formName);
-      form.actions.clearFormStore(formName);
-    };
-  }, []);
-  useEffect(() => {
-    if (!state.configStore || !state.configStore[formName]) {
-      return;
-    }
-
-    const {
-      newConfig,
-      hasChanges
-    } = handleFormConfigChange(state.configStore[formName], formConfig);
-
-    if (hasChanges) {
-      const newState = prepareFormInitialState(formConfig, form.state.formState[formName]);
-      actions.setConfig(formName, newConfig);
-      actions.setErrorFunction(formName, onError);
-      actions.setSuccessFunction(formName, onSuccess);
-      form.actions.setFormState(formName, newState);
-    }
-  }, [formConfig, form]);
   return React.Children.map(children, child => renderChild(child, formName));
 };
 
 const renderChild = (child, formName) => {
   if (typeof child === 'string' || typeof child === 'number' || typeof child === null) {
     return child;
-  } // tslint:disable-next-line:no-any
+  }
 
+  const {
+    state
+  } = useStore(formStore); // tslint:disable-next-line:no-any
 
   const reactElementChild = child;
 
   if (reactElementChild.type === Input) {
-    const {
-      state
-    } = useStore(formStore);
     const {
       input
     } = useEvents();
@@ -83,9 +44,6 @@ const renderChild = (child, formName) => {
 
   if (reactElementChild.type === CheckBox) {
     const {
-      state
-    } = useStore(formStore);
-    const {
       checkBox
     } = useEvents();
     const checkBoxChild = child;
@@ -104,9 +62,6 @@ const renderChild = (child, formName) => {
   }
 
   if (reactElementChild.type === Picker) {
-    const {
-      state
-    } = useStore(formStore);
     const {
       picker
     } = useEvents();

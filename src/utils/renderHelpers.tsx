@@ -1,13 +1,9 @@
-import React, { useEffect } from 'react'
+import React from 'react'
 import { useStore } from 'outstated'
-import { prepareFormInitialState, handleFormConfigChange } from './stateUtils'
 import { useEvents } from '../hooks'
-import { configStore, formStore } from '../stores'
+import { formStore } from '../stores'
 import { CheckBox, Input, Picker } from '../components'
 import {
-    OnError,
-    OnSuccess,
-    FormConfig,
     FormOption,
     InputProps,
     PickerProps,
@@ -19,52 +15,11 @@ import {
 
 export const renderForm = (
     children: React.ReactNode,
-    formConfig: FormConfig,
-    formName: string,
-    onSuccess?: OnSuccess,
-    onError?: OnError
+    formName: string
 ) => {
     if (!children) {
         throw new Error('children are mandatory')
     }
-
-    if (!formConfig) {
-        throw new Error('form config is required')
-    }
-
-    const { state, actions } = useStore(configStore)
-    const form = useStore(formStore)
-
-    useEffect(() => {
-        const formState = prepareFormInitialState(formConfig)
-
-        actions.setConfig(formName, formConfig)
-        actions.setErrorFunction(formName, onError)
-        actions.setSuccessFunction(formName, onSuccess)
-        form.actions.setFormState(formName, formState)
-
-        return () => {
-            actions.clearConfigStore(formName)
-            form.actions.clearFormStore(formName)
-        }
-    }, [])
-
-    useEffect(() => {
-        if (!state.configStore || !state.configStore[formName]) {
-            return
-        }
-
-        const { newConfig, hasChanges } = handleFormConfigChange(state.configStore[formName], formConfig)
-
-        if (hasChanges) {
-            const newState = prepareFormInitialState(formConfig, form.state.formState[formName])
-
-            actions.setConfig(formName, newConfig)
-            actions.setErrorFunction(formName, onError)
-            actions.setSuccessFunction(formName, onSuccess)
-            form.actions.setFormState(formName, newState)
-        }
-    }, [formConfig, form])
 
     return React.Children.map(children, child => renderChild(child, formName))
 }
@@ -74,11 +29,12 @@ const renderChild = (child: React.ReactNode, formName: string) => {
         return child
     }
 
+    const { state } = useStore(formStore)
+
     // tslint:disable-next-line:no-any
     const reactElementChild = child as React.ReactElement<any>
 
     if (reactElementChild.type === Input) {
-        const { state } = useStore(formStore)
         const { input } = useEvents()
         const inputChild = child as React.ReactElement<InputProps>
         const key = inputChild.props.formFieldName
@@ -99,7 +55,6 @@ const renderChild = (child: React.ReactNode, formName: string) => {
     }
 
     if (reactElementChild.type === CheckBox) {
-        const { state } = useStore(formStore)
         const { checkBox } = useEvents()
         const checkBoxChild = child as React.ReactElement<CheckBoxProps>
         const key = checkBoxChild.props.formFieldName
@@ -119,7 +74,6 @@ const renderChild = (child: React.ReactNode, formName: string) => {
     }
 
     if (reactElementChild.type === Picker) {
-        const { state } = useStore(formStore)
         const { picker } = useEvents()
         const pickerChild = child as React.ReactElement<PickerProps>
         const key = pickerChild.props.formFieldName
