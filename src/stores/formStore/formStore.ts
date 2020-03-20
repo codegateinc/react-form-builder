@@ -1,11 +1,5 @@
-import { useState } from 'react'
-import {
-    FormState,
-    FormOption,
-    FieldConfig,
-    FormPickerState,
-    SubscribeOnChange
-} from '../../types'
+import { useEffect, useState } from 'react'
+import { FieldConfig, FormFieldType, FormOption, FormPickerState, FormState, SubscribeOnChange } from '../../types'
 
 export type FormStoreState = {
     [key: string]: FormState
@@ -98,12 +92,12 @@ export const formStore = () => {
                 [formKey]: {
                     ...prevState[formKey],
                     [key]: {
-                        type: prevState[formKey][key].type,
-                        isPristine: true,
-                        value: field.value || '',
-                        options: field.options || [],
-                        isRequired: field.isRequired || false,
-                        disabled: field.disabled || false
+                        ...formState[formKey][key],
+                        ...field,
+                        options: field.options || (prevState[formKey][key].type === FormFieldType.Picker
+                                ? (prevState[formKey][key] as FormPickerState).options
+                                : []
+                        )
                     }
                 }
             })),
@@ -115,17 +109,15 @@ export const formStore = () => {
                 return {}
             },
             onFormFieldChange: (formKey: string, formFieldName: string, onChange: SubscribeOnChange) => {
-                if (onChangeForm[formKey] && onChangeForm[formKey][formFieldName]) {
-                    return
-                }
-
-                setOnChangeForm(prevState => ({
-                    ...prevState,
-                    [formKey]: {
-                        ...prevState[formKey],
-                        [formFieldName]: onChange
-                    }
-                }))
+                useEffect(() => {
+                    setOnChangeForm(prevState => ({
+                        ...prevState,
+                        [formKey]: {
+                            ...prevState[formKey],
+                            [formFieldName]: onChange
+                        }
+                    }))
+                }, [formState])
             },
             clearFormStore: (formKey: string) => {
                 setFormState(prevState => ({

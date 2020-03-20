@@ -6,7 +6,7 @@ describe('[Stores]: ConfigStore', () => {
     it('should render itself', () => {
         const { result } = renderHook(configStore)
 
-        expect(result.current.state.configStore).toEqual(undefined)
+        expect(result.current.state.configStore).toEqual({})
     })
 
     it('should setConfig', () => {

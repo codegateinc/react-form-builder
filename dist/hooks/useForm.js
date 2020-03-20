@@ -4,7 +4,13 @@ import { useValidate } from './useValidate';
 import { prepareFormInitialState } from '../utils';
 import { configStore, formStore } from '../stores';
 import { FormFieldType } from '../types';
-export const useForm = formName => {
+import { useEffect } from 'react';
+export const useForm = ({
+  formName,
+  formConfig,
+  onError,
+  onSuccess
+}) => {
   const {
     state,
     actions
@@ -13,13 +19,22 @@ export const useForm = formName => {
   const {
     validateForm
   } = useValidate();
+  useEffect(() => {
+    const formState = prepareFormInitialState(formConfig);
+    config.actions.setConfig(formName, formConfig);
+    actions.setFormState(formName, formState);
+    return () => {
+      config.actions.clearConfigStore(formName);
+      actions.clearFormStore(formName);
+    };
+  }, []);
   return {
     submitForm: () => {
       const validated = validateForm(formName);
       const hasAnyError = validated.some(value => value);
 
       if (hasAnyError) {
-        return G.ifDefined(config.state.configErrorFunction[formName], G.call);
+        return G.ifDefined(onError, G.call);
       }
 
       const parsedForm = state.formState[formName] && G.toPairs(state.formState[formName]).reduce((acc, [key, object]) => {
@@ -39,7 +54,7 @@ export const useForm = formName => {
 
         return acc;
       }, {});
-      return G.ifDefined(config.state.configSuccessFunction[formName], fn => fn(parsedForm));
+      return G.ifDefined(onSuccess, fn => fn(parsedForm));
     },
     hasChanges: state.formState[formName] && G.toPairs(state.formState[formName]).some(([key, object]) => !object.isPristine),
     setField: (formFieldName, field) => actions.setFormField(formName, formFieldName, field),
@@ -48,6 +63,7 @@ export const useForm = formName => {
     subscribe: formFieldName => ({
       onChange: onChange => actions.onFormFieldChange(formName, formFieldName, onChange)
     }),
-    restoreToInitial: () => config.state.configStore && actions.setFormState(formName, prepareFormInitialState(config.state.configStore[formName]))
+    restoreToInitial: () => config.state.configStore && actions.setFormState(formName, prepareFormInitialState(config.state.configStore[formName])),
+    isFormReady: G.hasKeys(state.formState[formName])
   };
 };

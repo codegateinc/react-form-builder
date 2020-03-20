@@ -4,12 +4,9 @@ import { FormProps } from './types'
 
 export const Form: React.FunctionComponent<FormProps> = ({
     children,
-    formConfig,
-    onError,
-    onSuccess,
     formName
 }) => (
     <Fragment>
-        {renderForm(children, formConfig, formName, onSuccess, onError)}
+        {renderForm(children, formName)}
     </Fragment>
 )

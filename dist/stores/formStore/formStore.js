@@ -1,4 +1,5 @@
-import { useState } from 'react';
+import { useEffect, useState } from 'react';
+import { FormFieldType } from '../../types';
 export const formStore = () => {
   const [formState, setFormState] = useState({});
   const [onChangeForm, setOnChangeForm] = useState({});
@@ -58,13 +59,9 @@ export const formStore = () => {
       }),
       setFormField: (formKey, key, field) => formState[formKey] && setFormState(prevState => ({ ...prevState,
         [formKey]: { ...prevState[formKey],
-          [key]: {
-            type: prevState[formKey][key].type,
-            isPristine: true,
-            value: field.value || '',
-            options: field.options || [],
-            isRequired: field.isRequired || false,
-            disabled: field.disabled || false
+          [key]: { ...formState[formKey][key],
+            ...field,
+            options: field.options || (prevState[formKey][key].type === FormFieldType.Picker ? prevState[formKey][key].options : [])
           }
         }
       })),
@@ -76,15 +73,13 @@ export const formStore = () => {
         return {};
       },
       onFormFieldChange: (formKey, formFieldName, onChange) => {
-        if (onChangeForm[formKey] && onChangeForm[formKey][formFieldName]) {
-          return;
-        }
-
-        setOnChangeForm(prevState => ({ ...prevState,
-          [formKey]: { ...prevState[formKey],
-            [formFieldName]: onChange
-          }
-        }));
+        useEffect(() => {
+          setOnChangeForm(prevState => ({ ...prevState,
+            [formKey]: { ...prevState[formKey],
+              [formFieldName]: onChange
+            }
+          }));
+        }, [formState]);
       },
       clearFormStore: formKey => {
         setFormState(prevState => ({ ...prevState,
