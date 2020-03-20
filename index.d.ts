@@ -24,7 +24,7 @@ export const FormProvider: React.FunctionComponent = () => {}
 export const useForm = (config: UseFormProps) => ({
     submitForm: VoidFunction,
     hasChanges: () => boolean,
-    setField: (formFieldName: string, field: FieldConfig) => {},
+    setField: (formFieldName: string, field: Omit<FieldConfig, 'type'>) => {},
     isFormValid: boolean,
     getField: (formFieldName: string) => FormInputState | FormCheckBoxState | FormPickerState,
     restoreToInitial: VoidFunction,
