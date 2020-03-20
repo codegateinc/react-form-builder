@@ -87,21 +87,25 @@ export const formStore = () => {
                     }
                 }
             }),
-            setFormField: (formKey: string, key: string, field: Omit<FieldConfig, 'type'>) => formState[formKey] && setFormState(prevState => ({
-                ...prevState,
-                [formKey]: {
-                    ...prevState[formKey],
-                    [key]: {
-                        type: formState[formKey][key].type,
-                        ...formState[formKey][key],
-                        ...field,
-                        options: field.options || (prevState[formKey][key].type === FormFieldType.Picker
-                            ? (prevState[formKey][key] as FormPickerState).options
-                            : []
-                        )
-                    }
+            setFormField: (formKey: string, key: string, field: Omit<FieldConfig, 'type'>) => {
+                if (formState[formKey] && formState[formKey][key]) {
+                    setFormState(prevState => ({
+                        ...prevState,
+                        [formKey]: {
+                            ...prevState[formKey],
+                            [key]: {
+                                type: formState[formKey][key].type,
+                                ...formState[formKey][key],
+                                ...field,
+                                options: field.options || (prevState[formKey][key].type === FormFieldType.Picker
+                                        ? (prevState[formKey][key] as FormPickerState).options
+                                        : []
+                                )
+                            }
+                        }
+                    }))
                 }
-            })),
+            },
             getFormField: (formKey: string, key: string) => {
                 if (formState[formKey] && formState[formKey][key]) {
                     return formState[formKey][key]
