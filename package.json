@@ -3,7 +3,7 @@
   "author": "@codegate",
   "license": "MIT",
   "typings": "index.d.ts",
-  "version": "0.1.6",
+  "version": "0.1.7",
   "main": "dist/index.js",
   "scripts": {
     "test": "jest",
@@ -25,7 +25,6 @@
   "devDependencies": {
     "@babel/cli": "7.8.4",
     "@babel/core": "7.8.4",
-    "@babel/plugin-transform-modules-commonjs": "^7.8.3",
     "@babel/plugin-transform-react-jsx": "7.8.3",
     "@babel/preset-typescript": "7.8.3",
     "@testing-library/react-hooks": "3.2.1",

@@ -1,14 +1,6 @@
-"use strict";
-
-Object.defineProperty(exports, "__esModule", {
-  value: true
-});
-exports.configStore = void 0;
-
-var _react = require("react");
-
-const configStore = () => {
-  const [configStore, setConfig] = (0, _react.useState)({});
+import { useState } from 'react';
+export const configStore = () => {
+  const [configStore, setConfig] = useState({});
   return {
     actions: {
       setConfig: (key, newConfig) => setConfig(prevState => ({ ...prevState,
@@ -23,5 +15,3 @@ const configStore = () => {
     }
   };
 };
-
-exports.configStore = configStore;

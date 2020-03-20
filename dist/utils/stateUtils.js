@@ -1,21 +1,12 @@
-"use strict";
-
-Object.defineProperty(exports, "__esModule", {
-  value: true
-});
-exports.prepareFormInitialState = void 0;
-
-var _gUtils = require("@codegateinc/g-utils");
-
-var _types = require("../types");
-
-const prepareFormInitialState = formConfig => {
-  const configToPairs = _gUtils.G.toPairs(formConfig).map(([fieldName, config]) => {
+import { G } from '@codegateinc/g-utils';
+import { FormFieldType } from '../types';
+export const prepareFormInitialState = formConfig => {
+  const configToPairs = G.toPairs(formConfig).map(([fieldName, config]) => {
     if (config?.isRequired && !config?.validationRules) {
       throw new Error('validationRules are required if field isRequired  ');
     }
 
-    if (config.type === _types.FormFieldType.Input || config.type === _types.FormFieldType.CheckBox) {
+    if (config.type === FormFieldType.Input || config.type === FormFieldType.CheckBox) {
       return [fieldName, {
         value: config.value || '',
         isRequired: config?.isRequired || false,
@@ -26,7 +17,7 @@ const prepareFormInitialState = formConfig => {
       }];
     }
 
-    if (config.type === _types.FormFieldType.Picker) {
+    if (config.type === FormFieldType.Picker) {
       return [fieldName, {
         isRequired: config?.isRequired || false,
         isPristine: true,
@@ -37,8 +28,5 @@ const prepareFormInitialState = formConfig => {
       }];
     }
   });
-
-  return _gUtils.G.fromPairs(configToPairs);
+  return G.fromPairs(configToPairs);
 };
-
-exports.prepareFormInitialState = prepareFormInitialState;

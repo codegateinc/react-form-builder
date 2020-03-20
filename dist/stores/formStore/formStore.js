@@ -1,17 +1,8 @@
-"use strict";
-
-Object.defineProperty(exports, "__esModule", {
-  value: true
-});
-exports.formStore = void 0;
-
-var _react = require("react");
-
-var _types = require("../../types");
-
-const formStore = () => {
-  const [formState, setFormState] = (0, _react.useState)({});
-  const [onChangeForm, setOnChangeForm] = (0, _react.useState)({});
+import { useEffect, useState } from 'react';
+import { FormFieldType } from '../../types';
+export const formStore = () => {
+  const [formState, setFormState] = useState({});
+  const [onChangeForm, setOnChangeForm] = useState({});
   return {
     actions: {
       setFormState: (key, state) => setFormState(prevState => ({ ...prevState,
@@ -74,7 +65,7 @@ const formStore = () => {
                 type: formState[formKey][key].type,
                 ...formState[formKey][key],
                 ...field,
-                options: field.options || (prevState[formKey][key].type === _types.FormFieldType.Picker ? prevState[formKey][key].options : [])
+                options: field.options || (prevState[formKey][key].type === FormFieldType.Picker ? prevState[formKey][key].options : [])
               }
             }
           }));
@@ -88,7 +79,7 @@ const formStore = () => {
         return {};
       },
       onFormFieldChange: (formKey, formFieldName, onChange) => {
-        (0, _react.useEffect)(() => {
+        useEffect(() => {
           setOnChangeForm(prevState => ({ ...prevState,
             [formKey]: { ...prevState[formKey],
               [formFieldName]: onChange
@@ -110,5 +101,3 @@ const formStore = () => {
     }
   };
 };
-
-exports.formStore = formStore;

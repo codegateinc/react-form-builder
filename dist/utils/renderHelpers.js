@@ -1,31 +1,15 @@
-"use strict";
-
-Object.defineProperty(exports, "__esModule", {
-  value: true
-});
-exports.renderForm = void 0;
-
-var _react = _interopRequireDefault(require("react"));
-
-var _outstated = require("outstated");
-
-var _hooks = require("../hooks");
-
-var _stores = require("../stores");
-
-var _components = require("../components");
-
-function _interopRequireDefault(obj) { return obj && obj.__esModule ? obj : { default: obj }; }
-
-const renderForm = (children, formName) => {
+import React from 'react';
+import { useStore } from 'outstated';
+import { useEvents } from '../hooks';
+import { formStore } from '../stores';
+import { CheckBox, Input, Picker } from '../components';
+export const renderForm = (children, formName) => {
   if (!children) {
     throw new Error('children are mandatory');
   }
 
-  return _react.default.Children.map(children, child => renderChild(child, formName));
+  return React.Children.map(children, child => renderChild(child, formName));
 };
-
-exports.renderForm = renderForm;
 
 const renderChild = (child, formName) => {
   if (typeof child === 'string' || typeof child === 'number' || typeof child === null) {
@@ -34,19 +18,19 @@ const renderChild = (child, formName) => {
 
   const {
     state
-  } = (0, _outstated.useStore)(_stores.formStore); // tslint:disable-next-line:no-any
+  } = useStore(formStore); // tslint:disable-next-line:no-any
 
   const reactElementChild = child;
 
-  if (reactElementChild.type === _components.Input) {
+  if (reactElementChild.type === Input) {
     const {
       input
-    } = (0, _hooks.useEvents)();
+    } = useEvents();
     const inputChild = child;
     const key = inputChild.props.formFieldName;
     const formState = state.formState[formName];
     const inputState = formState ? formState[key] : undefined;
-    return _react.default.cloneElement(inputChild, { ...inputChild.props,
+    return React.cloneElement(inputChild, { ...inputChild.props,
       component: () => inputChild.props.component({
         value: inputState?.value || '',
         onChangeText: text => input.onChange(formName, key, text),
@@ -58,15 +42,15 @@ const renderChild = (child, formName) => {
     });
   }
 
-  if (reactElementChild.type === _components.CheckBox) {
+  if (reactElementChild.type === CheckBox) {
     const {
       checkBox
-    } = (0, _hooks.useEvents)();
+    } = useEvents();
     const checkBoxChild = child;
     const key = checkBoxChild.props.formFieldName;
     const formState = state.formState[formName];
     const checkBoxState = formState ? formState[key] : undefined;
-    return _react.default.cloneElement(checkBoxChild, { ...checkBoxChild.props,
+    return React.cloneElement(checkBoxChild, { ...checkBoxChild.props,
       component: () => checkBoxChild.props.component({
         value: checkBoxState?.value || false,
         onChange: () => checkBox.onChange(formName, key),
@@ -77,15 +61,15 @@ const renderChild = (child, formName) => {
     });
   }
 
-  if (reactElementChild.type === _components.Picker) {
+  if (reactElementChild.type === Picker) {
     const {
       picker
-    } = (0, _hooks.useEvents)();
+    } = useEvents();
     const pickerChild = child;
     const key = pickerChild.props.formFieldName;
     const formState = state.formState[formName];
     const pickerState = formState ? formState[key] : undefined;
-    return _react.default.cloneElement(pickerChild, { ...pickerChild.props,
+    return React.cloneElement(pickerChild, { ...pickerChild.props,
       component: () => pickerChild.props.component({
         onChange: options => picker.onChange(formName, key, options),
         errorMessage: pickerState?.errorMessage,
@@ -99,9 +83,8 @@ const renderChild = (child, formName) => {
   const reactElementChildren = reactElementChild.props.children;
 
   if (reactElementChildren) {
-    const newChildren = _react.default.Children.map(reactElementChildren, child => renderChild(child, formName));
-
-    return _react.default.cloneElement(reactElementChild, reactElementChild.props, newChildren);
+    const newChildren = React.Children.map(reactElementChildren, child => renderChild(child, formName));
+    return React.cloneElement(reactElementChild, reactElementChild.props, newChildren);
   }
 
   return reactElementChild;

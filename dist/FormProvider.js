@@ -1,22 +1,8 @@
-"use strict";
-
-Object.defineProperty(exports, "__esModule", {
-  value: true
-});
-exports.FormProvider = void 0;
-
-var _react = _interopRequireDefault(require("react"));
-
-var _outstated = require("outstated");
-
-var _stores = require("./stores");
-
-function _interopRequireDefault(obj) { return obj && obj.__esModule ? obj : { default: obj }; }
-
-const FormProvider = ({
+import React from 'react';
+import { Provider } from 'outstated';
+import { formBuilderStores } from './stores';
+export const FormProvider = ({
   children
-}) => _react.default.createElement(_outstated.Provider, {
-  stores: _stores.formBuilderStores
+}) => React.createElement(Provider, {
+  stores: formBuilderStores
 }, children);
-
-exports.FormProvider = FormProvider;
