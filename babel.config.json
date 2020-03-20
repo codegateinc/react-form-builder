@@ -1,4 +1,7 @@
 {
-    "plugins": ["@babel/plugin-transform-react-jsx"],
+    "plugins": [
+        "@babel/plugin-transform-react-jsx",
+        "@babel/plugin-transform-modules-commonjs"
+    ],
     "presets": ["@babel/preset-typescript"]
 }

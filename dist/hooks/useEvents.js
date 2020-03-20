@@ -1,14 +1,23 @@
-import { useBlur } from './useBlur';
-import { useChange } from './useChange';
-export const useEvents = () => {
+"use strict";
+
+Object.defineProperty(exports, "__esModule", {
+  value: true
+});
+exports.useEvents = void 0;
+
+var _useBlur = require("./useBlur");
+
+var _useChange = require("./useChange");
+
+const useEvents = () => {
   const {
     onInputBlur
-  } = useBlur();
+  } = (0, _useBlur.useBlur)();
   const {
     onInputChange,
     onCheckboxChange,
     onPickerChange
-  } = useChange();
+  } = (0, _useChange.useChange)();
   return {
     input: {
       onBlur: onInputBlur,
@@ -22,3 +31,5 @@ export const useEvents = () => {
     }
   };
 };
+
+exports.useEvents = useEvents;

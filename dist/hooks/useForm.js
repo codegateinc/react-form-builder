@@ -1,11 +1,25 @@
-import { useStore } from 'outstated';
-import { G } from '@codegateinc/g-utils';
-import { useValidate } from './useValidate';
-import { prepareFormInitialState } from '../utils';
-import { configStore, formStore } from '../stores';
-import { FormFieldType } from '../types';
-import { useEffect } from 'react';
-export const useForm = ({
+"use strict";
+
+Object.defineProperty(exports, "__esModule", {
+  value: true
+});
+exports.useForm = void 0;
+
+var _outstated = require("outstated");
+
+var _gUtils = require("@codegateinc/g-utils");
+
+var _useValidate = require("./useValidate");
+
+var _utils = require("../utils");
+
+var _stores = require("../stores");
+
+var _types = require("../types");
+
+var _react = require("react");
+
+const useForm = ({
   formName,
   formConfig,
   onError,
@@ -14,13 +28,13 @@ export const useForm = ({
   const {
     state,
     actions
-  } = useStore(formStore);
-  const config = useStore(configStore);
+  } = (0, _outstated.useStore)(_stores.formStore);
+  const config = (0, _outstated.useStore)(_stores.configStore);
   const {
     validateForm
-  } = useValidate();
-  useEffect(() => {
-    const formState = prepareFormInitialState(formConfig);
+  } = (0, _useValidate.useValidate)();
+  (0, _react.useEffect)(() => {
+    const formState = (0, _utils.prepareFormInitialState)(formConfig);
     config.actions.setConfig(formName, formConfig);
     actions.setFormState(formName, formState);
     return () => {
@@ -34,18 +48,18 @@ export const useForm = ({
       const hasAnyError = validated.some(value => value);
 
       if (hasAnyError) {
-        return G.ifDefined(onError, G.call);
+        return _gUtils.G.ifDefined(onError, _gUtils.G.call);
       }
 
-      const parsedForm = state.formState[formName] && G.toPairs(state.formState[formName]).reduce((acc, [key, object]) => {
-        if (object.type === FormFieldType.Input || object.type === FormFieldType.CheckBox) {
+      const parsedForm = state.formState[formName] && _gUtils.G.toPairs(state.formState[formName]).reduce((acc, [key, object]) => {
+        if (object.type === _types.FormFieldType.Input || object.type === _types.FormFieldType.CheckBox) {
           const value = object.value;
           return { ...acc,
             [key]: value
           };
         }
 
-        if (object.type === FormFieldType.Picker) {
+        if (object.type === _types.FormFieldType.Picker) {
           const options = object.options.filter(option => option.isSelected).map(option => option.value);
           return { ...acc,
             [key]: options
@@ -54,16 +68,19 @@ export const useForm = ({
 
         return acc;
       }, {});
-      return G.ifDefined(onSuccess, fn => fn(parsedForm));
+
+      return _gUtils.G.ifDefined(onSuccess, fn => fn(parsedForm));
     },
-    hasChanges: state.formState[formName] && G.toPairs(state.formState[formName]).some(([key, object]) => !object.isPristine),
+    hasChanges: state.formState[formName] && _gUtils.G.toPairs(state.formState[formName]).some(([key, object]) => !object.isPristine),
     setField: (formFieldName, field) => actions.setFormField(formName, formFieldName, field),
     isFormValid: !validateForm(formName, false).some(error => error),
     getField: formFieldName => actions.getFormField(formName, formFieldName),
     subscribe: formFieldName => ({
       onChange: onChange => actions.onFormFieldChange(formName, formFieldName, onChange)
     }),
-    restoreToInitial: () => config.state.configStore && actions.setFormState(formName, prepareFormInitialState(config.state.configStore[formName])),
-    isFormReady: G.hasKeys(state.formState[formName])
+    restoreToInitial: () => config.state.configStore && actions.setFormState(formName, (0, _utils.prepareFormInitialState)(config.state.configStore[formName])),
+    isFormReady: _gUtils.G.hasKeys(state.formState[formName])
   };
 };
+
+exports.useForm = useForm;

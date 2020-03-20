@@ -1,18 +1,29 @@
-import { useStore } from 'outstated';
-import { G } from '@codegateinc/g-utils';
-import { useValidate } from './useValidate';
-import { configStore, formStore } from '../stores';
-export const useChange = () => {
+"use strict";
+
+Object.defineProperty(exports, "__esModule", {
+  value: true
+});
+exports.useChange = void 0;
+
+var _outstated = require("outstated");
+
+var _gUtils = require("@codegateinc/g-utils");
+
+var _useValidate = require("./useValidate");
+
+var _stores = require("../stores");
+
+const useChange = () => {
   const {
     state,
     actions
-  } = useStore(formStore);
-  const form = useStore(configStore);
+  } = (0, _outstated.useStore)(_stores.formStore);
+  const form = (0, _outstated.useStore)(_stores.configStore);
   const {
     validateField,
     validateCheckBox,
     validatePicker
-  } = useValidate();
+  } = (0, _useValidate.useValidate)();
   return {
     onInputChange: (formName, key, value) => {
       const field = state.formState[formName][key];
@@ -48,7 +59,7 @@ export const useChange = () => {
       const configField = form.state.configStore && form.state.configStore[formName] && form.state.configStore[formName][key];
       const parsedValue = configField?.liveParser ? configField.liveParser(options) : options;
 
-      if (!G.is(Array, parsedValue)) {
+      if (!_gUtils.G.is(Array, parsedValue)) {
         throw new Error('liveParser must return array on picker');
       }
 
@@ -57,3 +68,5 @@ export const useChange = () => {
     }
   };
 };
+
+exports.useChange = useChange;
