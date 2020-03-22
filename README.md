@@ -38,7 +38,7 @@ functions that returns JSX
 
     useForm({
         formName: "uniqueFOrmName",
-        formConfig={{
+        formConfig={
             inputName: {
                 type: FormTypes.FormFieldType.Input,
                 value: ''
@@ -60,7 +60,7 @@ functions that returns JSX
                     }
                 ]
             }
-        }}
+        }
     })
 
     const form = (
