@@ -57,14 +57,20 @@ export const formStore = () => {
           }
         };
       }),
-      setFormField: (formKey, key, field) => formState[formKey] && setFormState(prevState => ({ ...prevState,
-        [formKey]: { ...prevState[formKey],
-          [key]: { ...formState[formKey][key],
-            ...field,
-            options: field.options || (prevState[formKey][key].type === FormFieldType.Picker ? prevState[formKey][key].options : [])
-          }
+      setFormField: (formKey, key, field) => {
+        if (formState[formKey] && formState[formKey][key]) {
+          setFormState(prevState => ({ ...prevState,
+            [formKey]: { ...prevState[formKey],
+              [key]: {
+                type: formState[formKey][key].type,
+                ...formState[formKey][key],
+                ...field,
+                options: field.options || (prevState[formKey][key].type === FormFieldType.Picker ? prevState[formKey][key].options : [])
+              }
+            }
+          }));
         }
-      })),
+      },
       getFormField: (formKey, key) => {
         if (formState[formKey] && formState[formKey][key]) {
           return formState[formKey][key];

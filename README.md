@@ -34,35 +34,37 @@ Just remember that you need to render `Field.TYPES` directly to `Form`, so helpe
 functions that returns JSX
 
 ```
-    import { Form } from '@codegateinc/react-form-builder'
+    import { Form, useForm } from '@codegateinc/react-form-builder'
+
+    useForm({
+        formName: "uniqueFOrmName",
+        formConfig={{
+            inputName: {
+                type: FormTypes.FormFieldType.Input,
+                value: ''
+            },
+            checkboxName: {
+                type: FormTypes.FormFieldType.CheckBox,
+                value: false
+            },
+            pickerName: {
+                type: FormTypes.FormFieldType.Picker,
+                options: [
+                    {
+                        value: 0,
+                        label: 'first'
+                    },
+                    {
+                        value: 1,
+                        label: 'second'
+                    }
+                ]
+            }
+        }}
+    })
 
     const form = (
-        <Form
-            formName="uniqueFormName"
-            formConfig={{
-                inputName: {
-                    type: FormTypes.FormFieldType.Input,
-                    value: ''
-                },
-                checkboxName: {
-                    type: FormTypes.FormFieldType.CheckBox,
-                    value: false
-                },
-                pickerName: {
-                    type: FormTypes.FormFieldType.Picker,
-                    options: [
-                        {
-                            value: 0,
-                            label: 'first'
-                        },
-                        {
-                            value: 1,
-                            label: 'second'
-                        }
-                    ]
-                }
-            }}
-        >
+        <Form formName="uniqueFormName">
             <Field.Input
                 formFieldName="inputName"
                 component={({ value, onChangeText }) => (
@@ -115,9 +117,6 @@ functions that returns JSX
 |props     |                 type                                      | description
 |----------|-----------------------------------------------------------|------------
 |formName  |`formName: string`                                         |unique formName
-|formConfig|`formConfig: KeyValuePair<FormConfig>`                     |form config that includes initial values, options, validators, and types of fields
-|onSuccess |`onSuccess?: form => void`                                 |optional function that provides parsed form after it has been submitted and is valid
-|onError   |`onError?: Function`                                       |optional function that is invoked when form is not valid and has been submitted
 
 ##### FormConfig
 
@@ -160,6 +159,8 @@ functions that returns JSX
 
 useForm hook provides submit function along with some useful functions that allow to for example get value of single field or subscribe to it
 
+##### useForm hooks returns
+
 |     function         |       type                                                               |description
 |----------------------|--------------------------------------------------------------------------|-------------
 |submitForm            |`() => void`                                                              |call to this function validates every field that was defined with `validationRule`, calls `Form`'s `onError` if errors occurs or `onSuccess`
@@ -170,6 +171,13 @@ useForm hook provides submit function along with some useful functions that allo
 |restoreToInitial      |`() => void`                                                              |restores form config to initial values
 |subscribe             |`(formFieldName: string) => { onChange: <T>((value: T) => void) => void }`|subscribes to field and returns value from form after it changes (this particular field)
 
+##### useForm hooks props
+| prop name|                        type                               |description
+|----------|-----------------------------------------------------------|--------------
+|formName  |`formName: string`                                         |unique formName
+|formConfig|`formConfig: KeyValuePair<FormConfig>`                     |form config that includes initial values, options, validators, and types of fields
+|onSuccess |`onSuccess?: form => void`                                 |optional function that provides parsed form after it has been submitted and is valid
+|onError   |`onError?: Function`                                       |optional function that is invoked when form is not valid and has been submitted
 
 ## Form fields
 
