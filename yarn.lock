@@ -279,10 +279,10 @@
     exec-sh "^0.3.2"
     minimist "^1.2.0"
 
-"@codegateinc/g-utils@0.0.23":
-  version "0.0.23"
-  resolved "https://registry.yarnpkg.com/@codegateinc/g-utils/-/g-utils-0.0.23.tgz#f351719d90bbcd02979b63de28238829fd1a8584"
-  integrity sha512-QeyFZds03dju3yzRDKi8Pm9VwMi9HRkiuXVm6Q/dv2sB23Y6REmWHeCECxtAzwxsZFZtfwt9NbPQPc26/ffXkw==
+"@codegateinc/g-utils@^0.0.24":
+  version "0.0.24"
+  resolved "https://registry.yarnpkg.com/@codegateinc/g-utils/-/g-utils-0.0.24.tgz#f4e269b3b9f08590360c2453406b3f068b8d866d"
+  integrity sha512-idsMxeTBRIuzmV4sdnC4zDEcjoyVTJM+MTjfY9frPWdYNRLGNCyX6PwmQ4Ca+4PCk68BN6GC9qn/6rJxWJ3Y3w==
 
 "@istanbuljs/load-nyc-config@^1.0.0":
   version "1.0.0"
