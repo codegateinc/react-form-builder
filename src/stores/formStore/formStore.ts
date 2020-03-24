@@ -97,8 +97,8 @@ export const formStore = () => {
                                 type: formState[formKey][key].type,
                                 ...formState[formKey][key],
                                 ...field,
-                                options: field.options || (prevState[formKey][key].type === FormFieldType.Picker
-                                        ? (prevState[formKey][key] as FormPickerState).options
+                                options: field.options || (formState[formKey][key].type === FormFieldType.Picker
+                                        ? (formState[formKey][key] as FormPickerState).options
                                         : []
                                 )
                             }
