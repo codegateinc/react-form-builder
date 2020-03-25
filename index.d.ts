@@ -23,7 +23,7 @@ export const useForm = (config: UseFormProps) => ({
     hasChanges: () => boolean,
     setField: (formFieldName: string, field: Omit<FieldConfig, 'type'>) => {},
     isFormValid: boolean,
-    getField: (formFieldName: string) => {},
+    getField: (formFieldName: string) => any,
     restoreToInitial: VoidFunction,
     subscribe: (formFieldName: string) => ({
         onChange: <T>(onChange: SubscribeOnChange<T>) => {}
