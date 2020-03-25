@@ -7,9 +7,6 @@ import {
     VoidFunction,
     UseFormProps,
     CheckBoxProps,
-    FormInputState,
-    FormPickerState,
-    FormCheckBoxState,
     SubscribeOnChange
 } from './types'
 import * as FormTypes from './types'
@@ -26,7 +23,7 @@ export const useForm = (config: UseFormProps) => ({
     hasChanges: () => boolean,
     setField: (formFieldName: string, field: Omit<FieldConfig, 'type'>) => {},
     isFormValid: boolean,
-    getField: (formFieldName: string) => FormInputState | FormCheckBoxState | FormPickerState,
+    getField: (formFieldName: string) => {},
     restoreToInitial: VoidFunction,
     subscribe: (formFieldName: string) => ({
         onChange: <T>(onChange: SubscribeOnChange<T>) => {}
