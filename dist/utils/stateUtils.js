@@ -30,3 +30,20 @@ export const prepareFormInitialState = formConfig => {
   });
   return G.fromPairs(configToPairs);
 };
+export const parseForm = (formName, state) => state[formName] && G.toPairs(state[formName]).reduce((acc, [key, object]) => {
+  if (object.type === FormFieldType.Input || object.type === FormFieldType.CheckBox) {
+    const value = object.value;
+    return { ...acc,
+      [key]: value
+    };
+  }
+
+  if (object.type === FormFieldType.Picker) {
+    const options = object.options.filter(option => option.isSelected).map(option => option.value);
+    return { ...acc,
+      [key]: options
+    };
+  }
+
+  return acc;
+});

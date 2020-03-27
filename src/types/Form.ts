@@ -38,10 +38,11 @@ export type OnError = (errors: Array<KeyValuePair>) => void
 export type FormProps = {
     formName: string
 }
+export type OnUpdate = (form: any) => void
 
 export interface UseFormProps extends FormProps {
     formConfig: FormConfig,
     onSuccess?: OnSuccess,
     onError?: OnError,
-    debounce?: number
+    onUpdate?: OnUpdate
 }

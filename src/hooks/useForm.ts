@@ -1,79 +1,32 @@
 import { useStore } from 'outstated'
-import { Subject } from 'rxjs'
-import { debounceTime } from 'rxjs/operators'
 import { G } from '@codegateinc/g-utils'
 import { useValidate } from './useValidate'
-import { prepareFormInitialState } from '../utils'
+import { parseForm, prepareFormInitialState } from '../utils'
 import { configStore, formStore } from '../stores'
 import {
     FieldState,
     FieldConfig,
     UseFormProps,
-    FormFieldType,
-    FormInputState,
-    FormPickerState,
-    SubscribeOnChange,
-    FormCheckBoxState
+    SubscribeOnChange
 } from '../types'
-import { useEffect, useMemo } from 'react'
+import { useEffect } from 'react'
 
 export const useForm = <T>({
     formName,
     formConfig,
     onError,
     onSuccess,
-    debounce
+    onUpdate
 }: UseFormProps) => {
     const { state, actions } = useStore(formStore)
     const config = useStore(configStore)
     const { validateForm } = useValidate()
 
-    const stream: Subject<{}> = new Subject()
-    const parsedForm = useMemo(() => state.formState[formName] && G.toPairs<FieldState>(state.formState[formName])
-        .reduce((acc, [key, object]) => {
-            if (object.type === FormFieldType.Input || object.type === FormFieldType.CheckBox) {
-                const value = (object as FormInputState | FormCheckBoxState).value
-
-                return {
-                    ...acc,
-                    [key]: value
-                }
-            }
-
-            if (object.type === FormFieldType.Picker) {
-                const options = (object as FormPickerState).options
-                    .filter(option => option.isSelected)
-                    .map(option => option.value)
-
-                return {
-                    ...acc,
-                    [key]: options
-                }
-            }
-
-            return acc
-        }, {}), [state])
-
-    useEffect(() => {
-        stream
-            .pipe(debounceTime(debounce || 0))
-            .subscribe(() => {
-                if (debounce && onSuccess) {
-                    onSuccess(parsedForm)
-                }
-            })
-
-        return () => {
-            stream.unsubscribe()
-        }
-    }, [])
-
-    useEffect(() => stream.next(), [state])
-
     useEffect(() => {
         const formState = prepareFormInitialState(formConfig)
 
         config.actions.setConfig(formName, formConfig)
+        config.actions.setOnUpdate(formName, onUpdate)
         actions.setFormState(formName, formState)
 
         return () => {
@@ -92,6 +45,8 @@ export const useForm = <T>({
             if (hasAnyError) {
                 return G.ifDefined(onError, G.call)
             }
+
+            const parsedForm = parseForm(formName, state.formState)
 
             return G.ifDefined(onSuccess, fn => fn(parsedForm))
         },
