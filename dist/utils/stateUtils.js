@@ -46,4 +46,4 @@ export const parseForm = (formName, state) => state[formName] && G.toPairs(state
   }
 
   return acc;
-});
+}, {});
