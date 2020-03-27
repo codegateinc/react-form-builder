@@ -178,6 +178,7 @@ useForm hook provides submit function along with some useful functions that allo
 |formConfig|`formConfig: KeyValuePair<FormConfig>`                     |form config that includes initial values, options, validators, and types of fields
 |onSuccess |`onSuccess?: form => void`                                 |optional function that provides parsed form after it has been submitted and is valid
 |onError   |`onError?: Function`                                       |optional function that is invoked when form is not valid and has been submitted
+|debounce  |`debounce?: number`                                        |optional number that if provided function `onSuccess` will be called after specified number in ms
 
 ## Form fields
 
