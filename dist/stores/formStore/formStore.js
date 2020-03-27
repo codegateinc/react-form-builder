@@ -65,6 +65,7 @@ export const formStore = () => {
                 type: formState[formKey][key].type,
                 ...formState[formKey][key],
                 ...field,
+                isPristine: false,
                 options: field.options || (formState[formKey][key].type === FormFieldType.Picker ? formState[formKey][key].options : [])
               }
             }
