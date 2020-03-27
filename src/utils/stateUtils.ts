@@ -63,4 +63,4 @@ export const parseForm = (formName: string, state: FormStoreState) => state[form
         }
 
         return acc
-    })
+    }, {})
