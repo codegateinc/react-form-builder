@@ -58,13 +58,17 @@ export const useForm = <T>({
         stream
             .pipe(debounceTime(debounce || 0))
             .subscribe(() => {
-                G.ifDefined(onSuccess, fn => fn(parsedForm))
+                if (debounce && onSuccess) {
+                    onSuccess(parsedForm)
+                }
             })
 
         return () => {
             stream.unsubscribe()
         }
     }, [])
+
+    useEffect(() => stream.next(), [state])
 
     useEffect(() => {
         const formState = prepareFormInitialState(formConfig)
