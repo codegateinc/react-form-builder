@@ -1,15 +1,18 @@
 import { useStore } from 'outstated';
+import { Subject } from 'rxjs';
+import { debounceTime } from 'rxjs/operators';
 import { G } from '@codegateinc/g-utils';
 import { useValidate } from './useValidate';
 import { prepareFormInitialState } from '../utils';
 import { configStore, formStore } from '../stores';
 import { FormFieldType } from '../types';
-import { useEffect } from 'react';
+import { useEffect, useMemo } from 'react';
 export const useForm = ({
   formName,
   formConfig,
   onError,
-  onSuccess
+  onSuccess,
+  debounce
 }) => {
   const {
     state,
@@ -19,6 +22,32 @@ export const useForm = ({
   const {
     validateForm
   } = useValidate();
+  const stream = new Subject();
+  const parsedForm = useMemo(() => state.formState[formName] && G.toPairs(state.formState[formName]).reduce((acc, [key, object]) => {
+    if (object.type === FormFieldType.Input || object.type === FormFieldType.CheckBox) {
+      const value = object.value;
+      return { ...acc,
+        [key]: value
+      };
+    }
+
+    if (object.type === FormFieldType.Picker) {
+      const options = object.options.filter(option => option.isSelected).map(option => option.value);
+      return { ...acc,
+        [key]: options
+      };
+    }
+
+    return acc;
+  }, {}), [state]);
+  useEffect(() => {
+    stream.pipe(debounceTime(debounce || 0)).subscribe(() => {
+      G.ifDefined(onSuccess, fn => fn(parsedForm));
+    });
+    return () => {
+      stream.unsubscribe();
+    };
+  }, []);
   useEffect(() => {
     const formState = prepareFormInitialState(formConfig);
     config.actions.setConfig(formName, formConfig);
@@ -37,23 +66,6 @@ export const useForm = ({
         return G.ifDefined(onError, G.call);
       }
 
-      const parsedForm = state.formState[formName] && G.toPairs(state.formState[formName]).reduce((acc, [key, object]) => {
-        if (object.type === FormFieldType.Input || object.type === FormFieldType.CheckBox) {
-          const value = object.value;
-          return { ...acc,
-            [key]: value
-          };
-        }
-
-        if (object.type === FormFieldType.Picker) {
-          const options = object.options.filter(option => option.isSelected).map(option => option.value);
-          return { ...acc,
-            [key]: options
-          };
-        }
-
-        return acc;
-      }, {});
       return G.ifDefined(onSuccess, fn => fn(parsedForm));
     },
     hasChanges: state.formState[formName] && G.toPairs(state.formState[formName]).some(([key, object]) => !object.isPristine),

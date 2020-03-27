@@ -3,7 +3,7 @@
   "author": "@codegate",
   "license": "MIT",
   "typings": "index.d.ts",
-  "version": "0.1.14",
+  "version": "0.1.15",
   "main": "dist/index.js",
   "scripts": {
     "test": "jest",
@@ -20,7 +20,8 @@
   "dependencies": {
     "@codegateinc/g-utils": "^0.0.24",
     "deep-equal": "2.0.1",
-    "outstated": "3.0.1"
+    "outstated": "3.0.1",
+    "rxjs": "6.5.4"
   },
   "devDependencies": {
     "@babel/cli": "7.8.4",
