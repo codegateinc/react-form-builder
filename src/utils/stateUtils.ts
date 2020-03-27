@@ -1,10 +1,11 @@
 import { G } from '@codegateinc/g-utils'
 import {
     FieldConfig,
-    FieldState,
+    FieldState, FormCheckBoxState,
     FormConfig,
-    FormFieldType
+    FormFieldType, FormInputState, FormPickerState, FormState
 } from '../types'
+import { FormStoreState } from '../stores/formStore'
 
 export const prepareFormInitialState = (formConfig: FormConfig) => {
     const configToPairs = G.toPairs<FieldConfig>(formConfig)
@@ -38,3 +39,28 @@ export const prepareFormInitialState = (formConfig: FormConfig) => {
 
     return G.fromPairs(configToPairs)
 }
+
+export const parseForm = (formName: string, state: FormStoreState) => state[formName] && G.toPairs<FieldState>(state[formName])
+    .reduce((acc, [key, object]) => {
+        if (object.type === FormFieldType.Input || object.type === FormFieldType.CheckBox) {
+            const value = (object as FormInputState | FormCheckBoxState).value
+
+            return {
+                ...acc,
+                [key]: value
+            }
+        }
+
+        if (object.type === FormFieldType.Picker) {
+            const options = (object as FormPickerState).options
+                .filter(option => option.isSelected)
+                .map(option => option.value)
+
+            return {
+                ...acc,
+                [key]: options
+            }
+        }
+
+        return acc
+    })

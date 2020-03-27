@@ -1,7 +1,8 @@
 import React from 'react'
+import { G } from '@codegateinc/g-utils'
 import { useStore } from 'outstated'
 import { useEvents } from '../hooks'
-import { formStore } from '../stores'
+import { configStore, formStore } from '../stores'
 import { CheckBox, Input, Picker } from '../components'
 import {
     FormOption,
@@ -12,6 +13,7 @@ import {
     FormPickerState,
     FormCheckBoxState
 } from '../types'
+import { parseForm } from './stateUtils'
 
 export const renderForm = (
     children: React.ReactNode,
@@ -30,6 +32,8 @@ const renderChild = (child: React.ReactNode, formName: string) => {
     }
 
     const { state } = useStore(formStore)
+    const { state: { configOnUpdate } } = useStore(configStore)
+    const parsedForm = parseForm(formName, state.formState)
 
     // tslint:disable-next-line:no-any
     const reactElementChild = child as React.ReactElement<any>
@@ -45,7 +49,10 @@ const renderChild = (child: React.ReactNode, formName: string) => {
             ...inputChild.props,
             component: () => inputChild.props.component({
                 value: inputState?.value || '',
-                onChangeText: text => input.onChange(formName, key, text),
+                onChangeText: text => {
+                    input.onChange(formName, key, text)
+                    G.ifDefined(configOnUpdate[formName], fn => fn(parsedForm))
+                },
                 onBlur: () => input.onBlur(formName, key, inputState?.value || ''),
                 errorMessage: inputState?.errorMessage,
                 disabled: inputState?.disabled || false,
@@ -65,7 +72,10 @@ const renderChild = (child: React.ReactNode, formName: string) => {
             ...checkBoxChild.props,
             component: () => checkBoxChild.props.component({
                 value: checkBoxState?.value || false,
-                onChange: () => checkBox.onChange(formName, key),
+                onChange: () => {
+                    checkBox.onChange(formName, key)
+                    G.ifDefined(configOnUpdate[formName], fn => fn(parsedForm))
+                },
                 errorMessage: checkBoxState?.errorMessage,
                 disabled: checkBoxState?.disabled || false,
                 isPristine: checkBoxState?.isPristine || true
@@ -83,7 +93,10 @@ const renderChild = (child: React.ReactNode, formName: string) => {
         return React.cloneElement<PickerProps>(pickerChild, {
             ...pickerChild.props,
             component: () => pickerChild.props.component({
-                onChange: (options: Array<FormOption>) => picker.onChange(formName, key, options),
+                onChange: (options: Array<FormOption>) => {
+                    picker.onChange(formName, key, options)
+                    G.ifDefined(configOnUpdate[formName], fn => fn(parsedForm))
+                },
                 errorMessage: pickerState?.errorMessage,
                 disabled: pickerState?.disabled || false,
                 isPristine: pickerState?.isPristine || true,
