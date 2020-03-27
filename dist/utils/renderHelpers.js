@@ -25,8 +25,7 @@ const renderChild = (child, formName) => {
     state: {
       configOnUpdate
     }
-  } = useStore(configStore);
-  const parsedForm = parseForm(formName, state.formState); // tslint:disable-next-line:no-any
+  } = useStore(configStore); // tslint:disable-next-line:no-any
 
   const reactElementChild = child;
 
@@ -41,10 +40,9 @@ const renderChild = (child, formName) => {
     return React.cloneElement(inputChild, { ...inputChild.props,
       component: () => inputChild.props.component({
         value: inputState?.value || '',
-        onChangeText: text => {
-          input.onChange(formName, key, text);
-          G.ifDefined(configOnUpdate[formName], fn => fn(parsedForm));
-        },
+        onChangeText: text => input.onChange(formName, key, text, state => {
+          G.ifDefined(configOnUpdate[formName], fn => fn(parseForm(state)));
+        }),
         onBlur: () => input.onBlur(formName, key, inputState?.value || ''),
         errorMessage: inputState?.errorMessage,
         disabled: inputState?.disabled || false,
@@ -64,10 +62,9 @@ const renderChild = (child, formName) => {
     return React.cloneElement(checkBoxChild, { ...checkBoxChild.props,
       component: () => checkBoxChild.props.component({
         value: checkBoxState?.value || false,
-        onChange: () => {
-          checkBox.onChange(formName, key);
-          G.ifDefined(configOnUpdate[formName], fn => fn(parsedForm));
-        },
+        onChange: () => checkBox.onChange(formName, key, state => {
+          G.ifDefined(configOnUpdate[formName], fn => fn(parseForm(state)));
+        }),
         errorMessage: checkBoxState?.errorMessage,
         disabled: checkBoxState?.disabled || false,
         isPristine: checkBoxState?.isPristine || true
@@ -85,10 +82,9 @@ const renderChild = (child, formName) => {
     const pickerState = formState ? formState[key] : undefined;
     return React.cloneElement(pickerChild, { ...pickerChild.props,
       component: () => pickerChild.props.component({
-        onChange: options => {
-          picker.onChange(formName, key, options);
-          G.ifDefined(configOnUpdate[formName], fn => fn(parsedForm));
-        },
+        onChange: options => picker.onChange(formName, key, options, state => {
+          G.ifDefined(configOnUpdate[formName], fn => fn(parseForm(state)));
+        }),
         errorMessage: pickerState?.errorMessage,
         disabled: pickerState?.disabled || false,
         isPristine: pickerState?.isPristine || true,

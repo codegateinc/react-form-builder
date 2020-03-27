@@ -14,7 +14,7 @@ export const useChange = () => {
     validatePicker
   } = useValidate();
   return {
-    onInputChange: (formName, key, value) => {
+    onInputChange: (formName, key, value, callback) => {
       const field = state.formState[formName][key];
       const configField = form.state.configStore && form.state.configStore[formName] && form.state.configStore[formName][key];
       const parsedValue = configField?.liveParser ? configField.liveParser(value) : value;
@@ -27,9 +27,9 @@ export const useChange = () => {
         validateField(formName, key, parsedValue);
       }
 
-      actions.setFormValue(formName, key, parsedValue);
+      actions.setFormValue(formName, key, parsedValue, callback);
     },
-    onCheckboxChange: (formName, key) => {
+    onCheckboxChange: (formName, key, callback) => {
       const field = state.formState[formName][key];
       const configField = form.state.configStore && form.state.configStore[formName] && form.state.configStore[formName][key];
       const parsedValue = configField?.liveParser ? configField.liveParser(!field.value) : !field.value;
@@ -42,9 +42,9 @@ export const useChange = () => {
         validateCheckBox(formName, key, parsedValue);
       }
 
-      actions.setFormValue(formName, key, parsedValue);
+      actions.setFormValue(formName, key, parsedValue, callback);
     },
-    onPickerChange: (formName, key, options) => {
+    onPickerChange: (formName, key, options, callback) => {
       const configField = form.state.configStore && form.state.configStore[formName] && form.state.configStore[formName][key];
       const parsedValue = configField?.liveParser ? configField.liveParser(options) : options;
 
@@ -53,7 +53,7 @@ export const useChange = () => {
       }
 
       validatePicker(formName, key, options);
-      actions.setFormOptions(formName, key, options);
+      actions.setFormOptions(formName, key, options, callback);
     }
   };
 };

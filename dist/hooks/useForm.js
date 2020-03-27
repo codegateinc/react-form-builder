@@ -38,7 +38,7 @@ export const useForm = ({
         return G.ifDefined(onError, G.call);
       }
 
-      const parsedForm = parseForm(formName, state.formState);
+      const parsedForm = parseForm(state.formState[formName]);
       return G.ifDefined(onSuccess, fn => fn(parsedForm));
     },
     hasChanges: state.formState[formName] && G.toPairs(state.formState[formName]).some(([key, object]) => !object.isPristine),

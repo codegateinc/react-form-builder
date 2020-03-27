@@ -40,7 +40,7 @@ export const prepareFormInitialState = (formConfig: FormConfig) => {
     return G.fromPairs(configToPairs)
 }
 
-export const parseForm = (formName: string, state: FormStoreState) => state[formName] && G.toPairs<FieldState>(state[formName])
+export const parseForm = (state: FormState) => state && G.toPairs<FieldState>(state)
     .reduce((acc, [key, object]) => {
         if (object.type === FormFieldType.Input || object.type === FormFieldType.CheckBox) {
             const value = (object as FormInputState | FormCheckBoxState).value

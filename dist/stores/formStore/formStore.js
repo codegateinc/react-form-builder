@@ -1,4 +1,5 @@
 import { useEffect, useState } from 'react';
+import { G } from '@codegateinc/g-utils';
 import { FormFieldType } from '../../types';
 export const formStore = () => {
   const [formState, setFormState] = useState({});
@@ -8,18 +9,20 @@ export const formStore = () => {
       setFormState: (key, state) => setFormState(prevState => ({ ...prevState,
         [key]: state
       })),
-      setFormValue: (formKey, key, value) => {
+      setFormValue: (formKey, key, value, callback) => {
         if (!formState[formKey]) {
           return;
         }
 
-        setFormState(prevState => ({ ...prevState,
-          [formKey]: { ...prevState[formKey],
-            [key]: { ...prevState[formKey][key],
+        const newState = { ...formState,
+          [formKey]: { ...formState[formKey],
+            [key]: { ...formState[formKey][key],
               value
             }
           }
-        }));
+        };
+        setFormState(newState);
+        G.ifDefined(callback, fn => fn(newState[formKey]));
 
         if (onChangeForm[formKey] && onChangeForm[formKey][key]) {
           onChangeForm[formKey][key](value);
@@ -39,24 +42,33 @@ export const formStore = () => {
           }
         }
       })),
-      setFormOptions: (formKey, key, newOptions) => formState[formKey] && setFormState(prevState => {
-        const options = newOptions.map(option => option.value);
-        const changedOptions = prevState[formKey][key].options.map(option => ({ ...option,
-          isSelected: options.includes(option.value)
-        }));
-
-        if (onChangeForm[formKey] && onChangeForm[formKey][key]) {
-          onChangeForm[formKey][key](changedOptions);
+      setFormOptions: (formKey, key, newOptions, callback) => {
+        if (!formState[formKey]) {
+          return;
         }
 
-        return { ...prevState,
-          [formKey]: { ...prevState[formKey],
-            [key]: { ...prevState[formKey][key],
-              options: changedOptions
-            }
+        const newState = () => {
+          const options = newOptions.map(option => option.value);
+          const changedOptions = formState[formKey][key].options.map(option => ({ ...option,
+            isSelected: options.includes(option.value)
+          }));
+
+          if (onChangeForm[formKey] && onChangeForm[formKey][key]) {
+            onChangeForm[formKey][key](changedOptions);
           }
+
+          return { ...formState,
+            [formKey]: { ...formState[formKey],
+              [key]: { ...formState[formKey][key],
+                options: changedOptions
+              }
+            }
+          };
         };
-      }),
+
+        setFormState(newState());
+        G.ifDefined(callback, fn => fn(newState()));
+      },
       setFormField: (formKey, key, field) => {
         if (formState[formKey] && formState[formKey][key]) {
           setFormState(prevState => ({ ...prevState,
