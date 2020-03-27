@@ -2,7 +2,7 @@ import { useStore } from 'outstated'
 import { G } from '@codegateinc/g-utils'
 import { useValidate } from './useValidate'
 import { configStore, formStore } from '../stores'
-import { FormCheckBoxState, FormInputState, FormOption } from '../types'
+import { FormCheckBoxState, FormInputState, FormOption, FormState } from '../types'
 
 export const useChange = () => {
     const { state, actions } = useStore(formStore)
@@ -10,7 +10,7 @@ export const useChange = () => {
     const { validateField, validateCheckBox, validatePicker } = useValidate()
 
     return {
-        onInputChange: (formName: string, key: string, value: string) => {
+        onInputChange: (formName: string, key: string, value: string, callback?: (state: FormState) => void) => {
             const field = state.formState[formName][key] as FormInputState
             const configField = form.state.configStore &&
                 form.state.configStore[formName] &&
@@ -28,9 +28,9 @@ export const useChange = () => {
                 validateField(formName, key, parsedValue)
             }
 
-            actions.setFormValue(formName, key, parsedValue)
+            actions.setFormValue(formName, key, parsedValue, callback)
         },
-        onCheckboxChange: (formName: string, key: string) => {
+        onCheckboxChange: (formName: string, key: string, callback?: (state: FormState) => void) => {
             const field = state.formState[formName][key] as FormCheckBoxState
             const configField = form.state.configStore &&
                 form.state.configStore[formName] &&
@@ -48,9 +48,9 @@ export const useChange = () => {
                 validateCheckBox(formName, key, parsedValue)
             }
 
-            actions.setFormValue(formName, key, parsedValue)
+            actions.setFormValue(formName, key, parsedValue, callback)
         },
-        onPickerChange: (formName: string, key: string, options: Array<FormOption>) => {
+        onPickerChange: (formName: string, key: string, options: Array<FormOption>, callback?: (state: FormState) => void) => {
             const configField = form.state.configStore &&
                 form.state.configStore[formName] &&
                 form.state.configStore[formName][key]
@@ -64,7 +64,7 @@ export const useChange = () => {
             }
 
             validatePicker(formName, key, options)
-            actions.setFormOptions(formName, key, options)
+            actions.setFormOptions(formName, key, options, callback)
         }
     }
 }

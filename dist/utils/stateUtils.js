@@ -30,7 +30,7 @@ export const prepareFormInitialState = formConfig => {
   });
   return G.fromPairs(configToPairs);
 };
-export const parseForm = (formName, state) => state[formName] && G.toPairs(state[formName]).reduce((acc, [key, object]) => {
+export const parseForm = state => state && G.toPairs(state).reduce((acc, [key, object]) => {
   if (object.type === FormFieldType.Input || object.type === FormFieldType.CheckBox) {
     const value = object.value;
     return { ...acc,
