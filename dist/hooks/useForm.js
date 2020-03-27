@@ -48,7 +48,20 @@ export const useForm = ({
     subscribe: formFieldName => ({
       onChange: onChange => actions.onFormFieldChange(formName, formFieldName, onChange)
     }),
-    restoreToInitial: () => config.state.configStore && actions.setFormState(formName, prepareFormInitialState(config.state.configStore[formName])),
+    restoreToInitial: () => {
+      if (config.state.configStore) {
+        const newState = prepareFormInitialState(config.state.configStore[formName]);
+        actions.setFormState(formName, newState);
+        G.ifDefined(onUpdate, fn => fn(parseForm(newState)));
+      }
+    },
+    clearForm: () => {
+      if (config.state.configStore) {
+        const newState = prepareFormInitialState(config.state.configStore[formName], true);
+        actions.setFormState(formName, newState);
+        G.ifDefined(onUpdate, fn => fn(parseForm(newState)));
+      }
+    },
     isFormReady: G.hasKeys(state.formState[formName])
   };
 };

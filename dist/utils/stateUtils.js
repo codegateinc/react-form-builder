@@ -1,6 +1,6 @@
 import { G } from '@codegateinc/g-utils';
 import { FormFieldType } from '../types';
-export const prepareFormInitialState = formConfig => {
+export const prepareFormInitialState = (formConfig, clearForm = false) => {
   const configToPairs = G.toPairs(formConfig).map(([fieldName, config]) => {
     if (config?.isRequired && !config?.validationRules) {
       throw new Error('validationRules are required if field isRequired  ');
@@ -8,7 +8,7 @@ export const prepareFormInitialState = formConfig => {
 
     if (config.type === FormFieldType.Input || config.type === FormFieldType.CheckBox) {
       return [fieldName, {
-        value: config.value || '',
+        value: clearForm ? config.type === FormFieldType.Input ? '' : false : config.value || '',
         isRequired: config?.isRequired || false,
         isPristine: true,
         disabled: config?.disabled || false,
@@ -24,7 +24,9 @@ export const prepareFormInitialState = formConfig => {
         disabled: config?.disabled || false,
         type: config.type,
         errorMessage: undefined,
-        options: config.options
+        options: clearForm ? config.options?.map(option => ({ ...option,
+          isSelected: false
+        })) || [] : config.options || []
       }];
     }
   });

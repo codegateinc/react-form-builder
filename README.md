@@ -169,6 +169,7 @@ useForm hook provides submit function along with some useful functions that allo
 |isFormValid           |`boolean`                                                                 |value that tells if form is valid
 |getField              |`(formFieldname: string) => FormStateConfig`                              |returns selected field
 |restoreToInitial      |`() => void`                                                              |restores form config to initial values
+|clearForm             |`() => void`                                                              |clears all values of form
 |subscribe             |`(formFieldName: string) => { onChange: <T>((value: T) => void) => void }`|subscribes to field and returns value from form after it changes (this particular field)
 
 ##### useForm hooks props

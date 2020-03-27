@@ -5,9 +5,8 @@ import {
     FormConfig,
     FormFieldType, FormInputState, FormPickerState, FormState
 } from '../types'
-import { FormStoreState } from '../stores/formStore'
 
-export const prepareFormInitialState = (formConfig: FormConfig) => {
+export const prepareFormInitialState = (formConfig: FormConfig, clearForm: boolean = false) => {
     const configToPairs = G.toPairs<FieldConfig>(formConfig)
         .map(([ fieldName, config ]) => {
             if (config?.isRequired && !config?.validationRules) {
@@ -16,7 +15,9 @@ export const prepareFormInitialState = (formConfig: FormConfig) => {
 
             if (config.type === FormFieldType.Input || config.type === FormFieldType.CheckBox) {
                 return [fieldName, {
-                    value: config.value || '',
+                    value: clearForm
+                        ? config.type === FormFieldType.Input ? '' : false
+                        : config.value || '',
                     isRequired: config?.isRequired || false,
                     isPristine: true,
                     disabled: config?.disabled || false,
@@ -32,7 +33,12 @@ export const prepareFormInitialState = (formConfig: FormConfig) => {
                     disabled: config?.disabled || false,
                     type: config.type,
                     errorMessage: undefined,
-                    options: config.options
+                    options: clearForm
+                        ? config.options?.map(option => ({
+                            ...option,
+                            isSelected: false
+                        })) || []
+                        : config.options || []
                 }]
             }
         }) as Array<[string, FieldState]>
