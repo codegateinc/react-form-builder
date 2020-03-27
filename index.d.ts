@@ -20,15 +20,15 @@ export const Form: React.FunctionComponent<FormProps> = () => {}
 export const FormProvider: React.FunctionComponent = () => {}
 export const useForm = (config: UseFormProps) => ({
     submitForm: VoidFunction,
-    hasChanges: boolean,
+    hasChanges: Boolean(),
     setField: (formFieldName: string, field: Omit<FieldConfig, 'type'>) => {},
-    isFormValid: boolean,
+    isFormValid: Boolean(),
     getField: (formFieldName: string) => any,
     restoreToInitial: VoidFunction,
     subscribe: (formFieldName: string) => ({
         onChange: <T>(onChange: SubscribeOnChange<T>) => {}
     }),
-    isFormReady: boolean
+    isFormReady: Boolean()
 })
 export {
     FormTypes
