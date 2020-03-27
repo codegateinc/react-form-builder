@@ -1,4 +1,6 @@
 import { useStore } from 'outstated'
+import { Subject } from 'rxjs'
+import { debounceTime } from 'rxjs/operators'
 import { G } from '@codegateinc/g-utils'
 import { useValidate } from './useValidate'
 import { prepareFormInitialState } from '../utils'
@@ -13,17 +15,56 @@ import {
     SubscribeOnChange,
     FormCheckBoxState
 } from '../types'
-import { useEffect } from 'react'
+import { useEffect, useMemo } from 'react'
 
 export const useForm = <T>({
     formName,
     formConfig,
     onError,
-    onSuccess
+    onSuccess,
+    debounce
 }: UseFormProps) => {
     const { state, actions } = useStore(formStore)
     const config = useStore(configStore)
     const { validateForm } = useValidate()
+
+    const stream: Subject<{}> = new Subject()
+    const parsedForm = useMemo(() => state.formState[formName] && G.toPairs<FieldState>(state.formState[formName])
+        .reduce((acc, [key, object]) => {
+            if (object.type === FormFieldType.Input || object.type === FormFieldType.CheckBox) {
+                const value = (object as FormInputState | FormCheckBoxState).value
+
+                return {
+                    ...acc,
+                    [key]: value
+                }
+            }
+
+            if (object.type === FormFieldType.Picker) {
+                const options = (object as FormPickerState).options
+                    .filter(option => option.isSelected)
+                    .map(option => option.value)
+
+                return {
+                    ...acc,
+                    [key]: options
+                }
+            }
+
+            return acc
+        }, {}), [state])
+
+    useEffect(() => {
+        stream
+            .pipe(debounceTime(debounce || 0))
+            .subscribe(() => {
+                G.ifDefined(onSuccess, fn => fn(parsedForm))
+            })
+
+        return () => {
+            stream.unsubscribe()
+        }
+    }, [])
 
     useEffect(() => {
         const formState = prepareFormInitialState(formConfig)
@@ -47,31 +88,6 @@ export const useForm = <T>({
             if (hasAnyError) {
                 return G.ifDefined(onError, G.call)
             }
-
-            const parsedForm = state.formState[formName] && G.toPairs<FieldState>(state.formState[formName])
-                .reduce((acc, [key, object]) => {
-                    if (object.type === FormFieldType.Input || object.type === FormFieldType.CheckBox) {
-                        const value = (object as FormInputState | FormCheckBoxState).value
-
-                        return {
-                            ...acc,
-                            [key]: value
-                        }
-                    }
-
-                    if (object.type === FormFieldType.Picker) {
-                        const options = (object as FormPickerState).options
-                            .filter(option => option.isSelected)
-                            .map(option => option.value)
-
-                        return {
-                            ...acc,
-                            [key]: options
-                        }
-                    }
-
-                    return acc
-                }, {})
 
             return G.ifDefined(onSuccess, fn => fn(parsedForm))
         },

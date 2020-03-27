@@ -42,5 +42,6 @@ export type FormProps = {
 export interface UseFormProps extends FormProps {
     formConfig: FormConfig,
     onSuccess?: OnSuccess,
-    onError?: OnError
+    onError?: OnError,
+    debounce?: number
 }
