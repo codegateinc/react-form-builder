@@ -20,7 +20,7 @@ export const Form: React.FunctionComponent<FormProps> = () => {}
 export const FormProvider: React.FunctionComponent = () => {}
 export const useForm = (config: UseFormProps) => ({
     submitForm: VoidFunction,
-    hasChanges: () => boolean,
+    hasChanges: boolean,
     setField: (formFieldName: string, field: Omit<FieldConfig, 'type'>) => {},
     isFormValid: boolean,
     getField: (formFieldName: string) => any,
