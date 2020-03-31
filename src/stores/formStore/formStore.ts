@@ -40,7 +40,16 @@ export const formStore = () => {
                     }
                 }
 
-                setFormState(newState)
+                setFormState(prevState => ({
+                    ...prevState,
+                    [formKey]: {
+                        ...prevState[formKey],
+                        [key]: {
+                            ...prevState[formKey][key],
+                            value
+                        }
+                    }
+                }))
 
                 G.ifDefined(callback, fn => fn(newState[formKey]))
 
@@ -87,10 +96,6 @@ export const formStore = () => {
                             isSelected: options.includes(option.value)
                         }))
 
-                    if (onChangeForm[formKey] && onChangeForm[formKey][key]) {
-                        onChangeForm[formKey][key](changedOptions)
-                    }
-
                     return {
                         ...formState,
                         [formKey]: {
@@ -103,7 +108,30 @@ export const formStore = () => {
                     }
                 }
 
-                setFormState(newState())
+                setFormState(prevState => {
+                    const options = newOptions
+                        .map(option => option.value)
+                    const changedOptions = (prevState[formKey][key] as FormPickerState).options
+                        .map(option => ({
+                            ...option,
+                            isSelected: options.includes(option.value)
+                        }))
+
+                    if (onChangeForm[formKey] && onChangeForm[formKey][key]) {
+                        onChangeForm[formKey][key](changedOptions)
+                    }
+
+                    return {
+                        ...prevState,
+                        [formKey]: {
+                            ...prevState[formKey],
+                            [key]: {
+                                ...prevState[formKey][key],
+                                options: changedOptions
+                            }
+                        }
+                    }
+                })
                 G.ifDefined(callback, fn => fn(newState()))
             },
             setFormField: (formKey: string, key: string, field: Omit<FieldConfig, 'type'>) => {
