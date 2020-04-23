@@ -85,7 +85,7 @@ export const formStore = () => {
             }
           };
         });
-        G.ifDefined(callback, fn => fn(newState()));
+        G.ifDefined(callback, fn => fn(newState()[formKey]));
       },
       setFormField: (formKey, key, field) => {
         if (formState[formKey] && formState[formKey][key]) {

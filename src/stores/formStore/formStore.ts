@@ -132,7 +132,7 @@ export const formStore = () => {
                         }
                     }
                 })
-                G.ifDefined(callback, fn => fn(newState()))
+                G.ifDefined(callback, fn => fn(newState()[formKey]))
             },
             setFormField: (formKey: string, key: string, field: Omit<FieldConfig, 'type'>) => {
                 if (formState[formKey] && formState[formKey][key]) {
