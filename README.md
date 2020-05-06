@@ -124,15 +124,16 @@ functions that returns JSX
 
 ###### FieldConfig
 
-|props          |                 type                                      | description
-|---------------|-----------------------------------------------------------|------------
-|value          |`value?: string / number / boolean`                        |value defines initial values of input and checkbox
-|type           |`type: FormFieldType`                                      |type is required prop that defines type of field
-|isRequired     |`isRequired?: boolean`                                     |prop that defines if field should be validated, if true, you must provide validationRules
-|validationRules|`validationRules?: Array<FormValidationRule>`              |defines validation rules and error message to each rule
-|options        |`optiions?: Array<FormOption>`                             |options defines initial values of picker field
-|disabled       |`disabled?: boolean`                                       |defines if field is disabled or not
-|liveParser     |`liveParse?: (value: ValidationValue) => ValidationValue`  |if defined, it is called on each field change, which the function is related to
+|props            |                 type                                      | description
+|-----------------|-----------------------------------------------------------|------------
+|value            |`value?: string / number / boolean`                        |value defines initial values of input and checkbox
+|type             |`type: FormFieldType`                                      |type is required prop that defines type of field
+|isRequired       |`isRequired?: boolean`                                     |prop that defines if field should be validated, if true, you must provide validationRules
+|validationRules  |`validationRules?: Array<FormValidationRule>`              |defines validation rules and error message to each rule
+|options          |`optiions?: Array<FormOption>`                             |options defines initial values of picker field
+|disabled         |`disabled?: boolean`                                       |defines if field is disabled or not
+|liveParser       |`liveParse?: (value: ValidationValue) => ValidationValue`  |if defined, it is called on each field change, which the function is related to
+|forceLiveValidate|`forceLiveValidate?: boolean`                              |prop that defines if field is validated on each change
 
 #### Field
 
@@ -150,7 +151,7 @@ functions that returns JSX
 |   name            |type               |              value
 |-------------------|-------------------|----------------------------------
 |FormFieldType      |enum               |`Input, Picker, CheckBox`
-|FormValidationRule |type               |`{ errorMessage: string, validationFunction: (value: ValidationValue) => boolean}`
+|FormValidationRule |type               |`{ errorMessage: string, validationFunction: (value: ValidationValue, formState: FormState) => boolean}`
 |ValidationValue    |type               |`string \| number \| boolean \| Array<FormOption>`
 |FormOption         |type               |`{ value: FormOptionValue, label: string, isSelected?: boolean }`
 |FormOptionValue    |type               |`number \| string`
