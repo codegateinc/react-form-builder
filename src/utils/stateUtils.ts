@@ -4,7 +4,7 @@ import {
     FieldState, FormCheckBoxState,
     FormConfig,
     FormFieldType, FormInputState, FormPickerState, FormState
-} from '../types'
+} from 'types'
 
 export const prepareFormInitialState = (formConfig: FormConfig, clearForm: boolean = false) => {
     const configToPairs = G.toPairs<FieldConfig>(formConfig)

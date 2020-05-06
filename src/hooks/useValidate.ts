@@ -15,7 +15,7 @@ export const useValidate = () => {
 
             if (field?.validationRules) {
                 const validated = field.validationRules
-                    .map(rule => rule.validationFunction(value)
+                    .map(rule => rule.validationFunction(value, form.state.formState[formName])
                         ? rule.errorMessage
                         : undefined
                     )
@@ -32,7 +32,7 @@ export const useValidate = () => {
 
             if (field?.validationRules) {
                 const [ rule ] = field.validationRules
-                const errorMessage = rule.validationFunction(value)
+                const errorMessage = rule.validationFunction(value, form.state.formState[formName])
                     ? rule.errorMessage
                     : undefined
 
@@ -44,7 +44,7 @@ export const useValidate = () => {
                 config.state.configStore[formName] &&
                 config.state.configStore[formName][key]
             const validated = field?.validationRules && field.validationRules
-                .map(rule => rule.validationFunction(options)
+                .map(rule => rule.validationFunction(options, form.state.formState[formName])
                     ? rule.errorMessage
                     : undefined
                 )
@@ -66,7 +66,7 @@ export const useValidate = () => {
                 if (configField?.validationRules && formState.type === FormFieldType.Input) {
                     const value = (formState as FormInputState).value
                     const validated = configField.validationRules
-                        .map(rule => rule.validationFunction(value)
+                        .map(rule => rule.validationFunction(value, form.state.formState[formName])
                             ? rule.errorMessage
                             : undefined
                         )
@@ -83,7 +83,7 @@ export const useValidate = () => {
                 if (configField?.validationRules && formState.type === FormFieldType.CheckBox) {
                     const value = (formState as FormCheckBoxState).value
                     const [ rule ] = configField.validationRules
-                    const errorMessage = rule.validationFunction(value)
+                    const errorMessage = rule.validationFunction(value, form.state.formState[formName])
                         ? rule.errorMessage
                         : undefined
 
@@ -97,7 +97,7 @@ export const useValidate = () => {
                 if (configField?.validationRules && formState.type === FormFieldType.Picker) {
                     const options = (formState as FormPickerState).options
                     const validated = configField.validationRules
-                        .map(rule => rule.validationFunction(options)
+                        .map(rule => rule.validationFunction(options, form.state.formState[formName])
                             ? rule.errorMessage
                             : undefined
                         )
