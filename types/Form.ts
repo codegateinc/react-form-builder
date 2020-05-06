@@ -1,4 +1,5 @@
 import { KeyValuePair } from './common'
+import { FormState } from '../src/types'
 
 export enum FormFieldType {
     Input = 0,
@@ -10,7 +11,7 @@ type ValidationValue = string | number | boolean | Array<FormOption>
 
 export type FormValidationRule = {
     errorMessage: string,
-    validationFunction(value: ValidationValue): boolean
+    validationFunction(value: ValidationValue, form: FormState): boolean
 }
 
 export type FormOptionValue = number | string
@@ -28,7 +29,8 @@ export type FieldConfig = {
     validationRules?: Array<FormValidationRule>,
     options?: Array<FormOption>,
     disabled?: boolean,
-    liveParser?(value: ValidationValue): ValidationValue
+    liveParser?(value: ValidationValue): ValidationValue,
+    forceLiveValidate?: boolean
 }
 
 export type FormConfig = KeyValuePair<FieldConfig>

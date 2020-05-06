@@ -1,15 +1,15 @@
+import { useEffect } from 'react'
 import { useStore } from 'outstated'
 import { G } from '@codegateinc/g-utils'
-import { useValidate } from './useValidate'
-import { parseForm, prepareFormInitialState } from '../utils'
-import { configStore, formStore } from '../stores'
+import { parseForm, prepareFormInitialState } from 'utils'
+import { configStore, formStore } from 'stores'
 import {
     FieldState,
     FieldConfig,
     UseFormProps,
     SubscribeOnChange
-} from '../types'
-import { useEffect } from 'react'
+} from 'types'
+import { useValidate } from './useValidate'
 
 export const useForm = <T>({
     formName,

@@ -1,9 +1,9 @@
 import React from 'react'
 import { G } from '@codegateinc/g-utils'
 import { useStore } from 'outstated'
-import { useEvents } from '../hooks'
-import { configStore, formStore } from '../stores'
-import { CheckBox, Input, Picker } from '../components'
+import { useEvents } from 'hooks/useEvents'
+import { configStore, formStore } from 'stores'
+import { CheckBox, Input, Picker } from 'components'
 import {
     FormOption,
     InputProps,
