@@ -43,7 +43,7 @@ export const useForm = <T>({
                 .some(value => value)
 
             if (hasAnyError) {
-                return G.ifDefined(onError, G.call)
+                return G.ifDefined(onError, fn => fn(validated))
             }
 
             const parsedForm = parseForm(state.formState[formName])

@@ -329,6 +329,11 @@
 
             if ((configField === null || configField === void 0 ? void 0 : configField.validationRules) && formState.type === FormFieldType.Input) {
               var value = formState.value;
+
+              if (!formState.isRequired && value === '') {
+                return undefined;
+              }
+
               var validated = configField.validationRules.map(function (rule) {
                 return rule.validationFunction(value, form.state.formState[formName]) ? rule.errorMessage : undefined;
               });
@@ -347,6 +352,11 @@
 
             if ((configField === null || configField === void 0 ? void 0 : configField.validationRules) && formState.type === FormFieldType.CheckBox) {
               var _value = formState.value;
+
+              if (!formState.isRequired) {
+                return undefined;
+              }
+
               var _configField$validati = configField.validationRules,
                   rule = _configField$validati[0];
 
@@ -361,6 +371,10 @@
 
             if ((configField === null || configField === void 0 ? void 0 : configField.validationRules) && formState.type === FormFieldType.Picker) {
               var options = formState.options;
+
+              if (!formState.isRequired) {
+                return undefined;
+              }
 
               var _validated = configField.validationRules.map(function (rule) {
                 return rule.validationFunction(options, form.state.formState[formName]) ? rule.errorMessage : undefined;
@@ -707,7 +721,9 @@
           });
 
           if (hasAnyError) {
-            return gUtils.G.ifDefined(onError, gUtils.G.call);
+            return gUtils.G.ifDefined(onError, function (fn) {
+              return fn(validated);
+            });
           }
 
           var parsedForm = parseForm(state.formState[formName]);

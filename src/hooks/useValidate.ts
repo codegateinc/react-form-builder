@@ -65,6 +65,11 @@ export const useValidate = () => {
 
                 if (configField?.validationRules && formState.type === FormFieldType.Input) {
                     const value = (formState as FormInputState).value
+
+                    if (!formState.isRequired && value === '') {
+                        return undefined
+                    }
+
                     const validated = configField.validationRules
                         .map(rule => rule.validationFunction(value, form.state.formState[formName])
                             ? rule.errorMessage
@@ -82,6 +87,11 @@ export const useValidate = () => {
 
                 if (configField?.validationRules && formState.type === FormFieldType.CheckBox) {
                     const value = (formState as FormCheckBoxState).value
+
+                    if (!formState.isRequired) {
+                        return undefined
+                    }
+
                     const [ rule ] = configField.validationRules
                     const errorMessage = rule.validationFunction(value, form.state.formState[formName])
                         ? rule.errorMessage
@@ -96,6 +106,11 @@ export const useValidate = () => {
 
                 if (configField?.validationRules && formState.type === FormFieldType.Picker) {
                     const options = (formState as FormPickerState).options
+
+                    if (!formState.isRequired) {
+                        return undefined
+                    }
+
                     const validated = configField.validationRules
                         .map(rule => rule.validationFunction(options, form.state.formState[formName])
                             ? rule.errorMessage
