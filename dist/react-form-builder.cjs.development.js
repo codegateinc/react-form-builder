@@ -276,6 +276,10 @@ var useValidate = function useValidate() {
     validateField: function validateField(formName, key, value) {
       var field = config.state.configStore && config.state.configStore[formName] && config.state.configStore[formName][key];
 
+      if (!field.isRequired && value.length === 0) {
+        return form.actions.setFormError(formName, key, undefined);
+      }
+
       if (field === null || field === void 0 ? void 0 : field.validationRules) {
         var validated = field.validationRules.map(function (rule) {
           return rule.validationFunction(value, form.state.formState[formName]) ? rule.errorMessage : undefined;
@@ -442,7 +446,9 @@ var useChange = function useChange() {
         throw new Error('liveParser must return string on input');
       }
 
-      if (field.errorMessage || !field.isPristine || configField.forceLiveValidate) {
+      var shouldValidateField = field.errorMessage || !field.isPristine || configField.forceLiveValidate;
+
+      if (shouldValidateField) {
         validateField(formName, key, parsedValue);
       }
 
