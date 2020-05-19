@@ -168,7 +168,7 @@ useForm hook provides submit function along with some useful functions that allo
 |hasChanges            |`boolean`                                                                            |value that informs about any change done to form
 |setField              |`(formFieldName: string, config: Omit<FieldConfig, 'type'>) => void`                 |sets new config for selected field
 |isFormValid           |`boolean`                                                                            |value that tells if form is valid
-|getField              |`(formFieldName: string) => FormInputField \| FormCheckboxField` \| FormPickerField  |returns selected field
+|getField              |`(formFieldName: string) => FormInputField \| FormCheckboxField \| FormPickerField`  |returns selected field
 |restoreToInitial      |`() => void`                                                                         |restores form config to initial values
 |clearForm             |`() => void`                                                                         |clears all values of form
 |subscribe             |`(formFieldName: string) => { onChange: <T>((value: T) => void) => void }`           |subscribes to field and returns value from form after it changes (this particular field)

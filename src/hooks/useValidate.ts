@@ -13,6 +13,10 @@ export const useValidate = () => {
                 config.state.configStore[formName] &&
                 config.state.configStore[formName][key]
 
+            if (!field.isRequired && value.length === 0) {
+                return form.actions.setFormError(formName, key, undefined)
+            }
+
             if (field?.validationRules) {
                 const validated = field.validationRules
                     .map(rule => rule.validationFunction(value, form.state.formState[formName])

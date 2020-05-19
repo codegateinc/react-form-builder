@@ -24,7 +24,9 @@ export const useChange = () => {
                 throw new Error('liveParser must return string on input')
             }
 
-            if (field.errorMessage || !field.isPristine || configField.forceLiveValidate) {
+            const shouldValidateField = field.errorMessage || !field.isPristine || configField.forceLiveValidate
+
+            if (shouldValidateField) {
                 validateField(formName, key, parsedValue)
             }
 
