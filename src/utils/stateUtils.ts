@@ -1,9 +1,13 @@
 import { G } from '@codegateinc/g-utils'
 import {
     FieldConfig,
-    FieldState, FormCheckBoxState,
+    FieldState,
+    FormCheckBoxState,
     FormConfig,
-    FormFieldType, FormInputState, FormPickerState, FormState
+    FormFieldType,
+    FormInputState,
+    FormPickerState,
+    FormState
 } from 'types'
 
 export const prepareFormInitialState = (formConfig: FormConfig, clearForm: boolean = false) => {
@@ -13,11 +17,24 @@ export const prepareFormInitialState = (formConfig: FormConfig, clearForm: boole
                 throw new Error('validationRules are required if field isRequired  ')
             }
 
-            if (config.type === FormFieldType.Input || config.type === FormFieldType.CheckBox) {
+            if (config.type === FormFieldType.Input) {
                 return [fieldName, {
                     value: clearForm
-                        ? config.type === FormFieldType.Input ? '' : false
+                        ? ''
                         : config.value || '',
+                    isRequired: config?.isRequired || false,
+                    isPristine: true,
+                    disabled: config?.disabled || false,
+                    type: config.type,
+                    errorMessage: undefined
+                }]
+            }
+
+            if (config.type === FormFieldType.CheckBox) {
+                return [fieldName, {
+                    value: clearForm
+                        ? false
+                        : config.value || false,
                     isRequired: config?.isRequired || false,
                     isPristine: true,
                     disabled: config?.disabled || false,

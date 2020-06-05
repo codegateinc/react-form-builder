@@ -443,7 +443,7 @@
             throw new Error('liveParser must return string on input');
           }
 
-          var shouldValidateField = field.errorMessage || !field.isPristine || configField.forceLiveValidate;
+          var shouldValidateField = field.errorMessage || !field.isPristine || configField.forceLiveValidate || configField.validationRules;
 
           if (shouldValidateField) {
             validateField(formName, key, parsedValue);
@@ -460,7 +460,7 @@
             throw new Error('liveParser must return boolean on checkbox');
           }
 
-          if (field.isRequired && !field.isPristine || field.errorMessage) {
+          if (field.isRequired && !field.isPristine || field.errorMessage || configField.validationRules) {
             validateCheckBox(formName, key, parsedValue);
           }
 
@@ -516,9 +516,20 @@
           throw new Error('validationRules are required if field isRequired  ');
         }
 
-        if (config.type === FormFieldType.Input || config.type === FormFieldType.CheckBox) {
+        if (config.type === FormFieldType.Input) {
           return [fieldName, {
-            value: clearForm ? config.type === FormFieldType.Input ? '' : false : config.value || '',
+            value: clearForm ? '' : config.value || '',
+            isRequired: (config === null || config === void 0 ? void 0 : config.isRequired) || false,
+            isPristine: true,
+            disabled: (config === null || config === void 0 ? void 0 : config.disabled) || false,
+            type: config.type,
+            errorMessage: undefined
+          }];
+        }
+
+        if (config.type === FormFieldType.CheckBox) {
+          return [fieldName, {
+            value: clearForm ? false : config.value || false,
             isRequired: (config === null || config === void 0 ? void 0 : config.isRequired) || false,
             isPristine: true,
             disabled: (config === null || config === void 0 ? void 0 : config.disabled) || false,
