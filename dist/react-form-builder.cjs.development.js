@@ -446,7 +446,7 @@ var useChange = function useChange() {
         throw new Error('liveParser must return string on input');
       }
 
-      var shouldValidateField = field.errorMessage || !field.isPristine || configField.forceLiveValidate || configField.validationRules;
+      var shouldValidateField = field.errorMessage || !field.isPristine || configField.forceLiveValidate;
 
       if (shouldValidateField) {
         validateField(formName, key, parsedValue);
