@@ -24,7 +24,7 @@ export const useChange = () => {
                 throw new Error('liveParser must return string on input')
             }
 
-            const shouldValidateField = field.errorMessage || !field.isPristine || configField.forceLiveValidate
+            const shouldValidateField = field.errorMessage || !field.isPristine || configField.forceLiveValidate || configField.validationRules
 
             if (shouldValidateField) {
                 validateField(formName, key, parsedValue)
@@ -46,7 +46,7 @@ export const useChange = () => {
                 throw new Error('liveParser must return boolean on checkbox')
             }
 
-            if (field.isRequired && !field.isPristine || field.errorMessage) {
+            if ((field.isRequired && !field.isPristine) || field.errorMessage || configField.validationRules) {
                 validateCheckBox(formName, key, parsedValue)
             }
 

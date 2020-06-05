@@ -3,7 +3,7 @@
   "author": "@codegate",
   "license": "MIT",
   "typings": "index.d.ts",
-  "version": "0.1.35",
+  "version": "0.1.36",
   "main": "dist/index.js",
   "scripts": {
     "test": "jest",
@@ -13,7 +13,7 @@
     "updateVersion": "yarn version --patch --no-git-tag-version",
     "test-coverage": "jest --coverage",
     "generate-types": "tsc --declaration",
-    "generate-changelog": "github_changelog_generator -u codegateinc -p react-form-builder --token 95b168b47fef31f8c529b21fa4afe89a2a3888cb --no-pr-wo-labels "
+    "generate-changelog": "github_changelog_generator -u codegateinc -p react-form-builder --token a6aa3d8b1fa7cb90e69dab79382627150227621a --no-pr-wo-labels "
   },
   "peerDependencies": {
     "react": "^16.13.0"
