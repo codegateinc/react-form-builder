@@ -786,6 +786,9 @@
             });
           }
         },
+        setFieldError: function setFieldError(formFieldName, errorMessage) {
+          return actions.setFormError(formName, formFieldName, errorMessage);
+        },
         isFormReady: gUtils.G.hasKeys(state.formState[formName])
       };
     };

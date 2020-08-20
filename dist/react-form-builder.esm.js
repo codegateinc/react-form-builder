@@ -782,6 +782,9 @@ var useForm = function useForm(_ref) {
         });
       }
     },
+    setFieldError: function setFieldError(formFieldName, errorMessage) {
+      return actions.setFormError(formName, formFieldName, errorMessage);
+    },
     isFormReady: G.hasKeys(state.formState[formName])
   };
 };

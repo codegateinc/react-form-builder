@@ -21,7 +21,7 @@ export const FormProvider: React.FunctionComponent = () => {}
 export const useForm = (config: UseFormProps) => ({
     submitForm: VoidFunction,
     hasChanges: Boolean(),
-    setField: (formFieldName: string, field: Omit<FieldConfig, 'type'>) => {},
+    setField: (formFieldName: string, field: Omit<FieldConfig, 'type'>) => Void,
     isFormValid: Boolean(),
     getField: (formFieldName: string) => any,
     restoreToInitial: VoidFunction,
@@ -29,6 +29,7 @@ export const useForm = (config: UseFormProps) => ({
     subscribe: (formFieldName: string) => ({
         onChange: <T>(onChange: SubscribeOnChange<T>) => {}
     }),
+    setFieldError: (formFieldName: string, errorMessage: string) => Void,
     isFormReady: Boolean()
 })
 export {

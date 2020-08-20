@@ -77,6 +77,7 @@ export const useForm = <T>({
                 G.ifDefined(onUpdate, fn => fn(parseForm(newState)))
             }
         },
+        setFieldError: (formFieldName: string, errorMessage: string) => actions.setFormError(formName, formFieldName, errorMessage),
         isFormReady: G.hasKeys(state.formState[formName])
     }
 }

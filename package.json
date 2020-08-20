@@ -3,17 +3,15 @@
   "author": "@codegate",
   "license": "MIT",
   "typings": "index.d.ts",
-  "version": "0.1.37",
+  "version": "0.1.38",
   "main": "dist/index.js",
   "scripts": {
     "test": "jest",
     "tsc": "node node_modules/typescript/bin/tsc",
-    "precommit": "concurrently 'tsc' 'yarn test' 'yarn build' 'yarn updateVersion' 'yarn generate-changelog' && git add dist package.json",
+    "precommit": "concurrently 'tsc' 'yarn test' 'yarn build' && git add dist package.json",
     "build": "tsdx build --format cjs,esm,umd",
-    "updateVersion": "yarn version --patch --no-git-tag-version",
     "test-coverage": "jest --coverage",
-    "generate-types": "tsc --declaration",
-    "generate-changelog": "github_changelog_generator -u codegateinc -p react-form-builder --token a6aa3d8b1fa7cb90e69dab79382627150227621a --no-pr-wo-labels "
+    "generate-types": "tsc --declaration"
   },
   "peerDependencies": {
     "react": "^16.13.0"
