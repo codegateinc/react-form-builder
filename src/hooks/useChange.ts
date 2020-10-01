@@ -56,17 +56,22 @@ export const useChange = () => {
             const configField = form.state.configStore &&
                 form.state.configStore[formName] &&
                 form.state.configStore[formName][key]
+            const valuedOptions = options.map(item => item.value)
+            const fullOptions = configField?.options?.map(option => ({
+                ...option,
+                isSelected: valuedOptions.includes(option.value)
+            }))
 
-            const parsedValue = configField?.liveParser
+            const parsedOptions = configField?.liveParser
                 ? configField.liveParser(options)
                 : options
 
-            if (!G.is(Array, parsedValue)) {
+            if (!G.is(Array, parsedOptions)) {
                 throw new Error('liveParser must return array on picker')
             }
 
-            validatePicker(formName, key, options)
-            actions.setFormOptions(formName, key, options, callback)
+            validatePicker(formName, key, fullOptions || [])
+            actions.setFormOptions(formName, key, parsedOptions as Array<FormOption>, callback)
         }
     }
 }

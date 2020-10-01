@@ -183,9 +183,8 @@ var formStore = function formStore() {
           _setFormState(function (prevState) {
             var _extends15, _extends16;
 
-            return _extends(_extends({}, prevState), {}, (_extends16 = {}, _extends16[formKey] = _extends(_extends({}, prevState[formKey]), {}, (_extends15 = {}, _extends15[key] = _extends(_extends(_extends({
-              type: formState[formKey][key].type
-            }, formState[formKey][key]), field), {}, {
+            return _extends(_extends({}, prevState), {}, (_extends16 = {}, _extends16[formKey] = _extends(_extends({}, prevState[formKey]), {}, (_extends15 = {}, _extends15[key] = _extends(_extends(_extends({}, formState[formKey][key]), field), {}, {
+              type: formState[formKey][key].type,
               options: field.options || (formState[formKey][key].type === FormFieldType.Picker ? formState[formKey][key].options : [])
             }), _extends15)), _extends16));
           });
@@ -470,15 +469,25 @@ var useChange = function useChange() {
       actions.setFormValue(formName, key, parsedValue, callback);
     },
     onPickerChange: function onPickerChange(formName, key, options, callback) {
-      var configField = form.state.configStore && form.state.configStore[formName] && form.state.configStore[formName][key];
-      var parsedValue = (configField === null || configField === void 0 ? void 0 : configField.liveParser) ? configField.liveParser(options) : options;
+      var _configField$options;
 
-      if (!gUtils.G.is(Array, parsedValue)) {
+      var configField = form.state.configStore && form.state.configStore[formName] && form.state.configStore[formName][key];
+      var valuedOptions = options.map(function (item) {
+        return item.value;
+      });
+      var fullOptions = configField === null || configField === void 0 ? void 0 : (_configField$options = configField.options) === null || _configField$options === void 0 ? void 0 : _configField$options.map(function (option) {
+        return _extends(_extends({}, option), {}, {
+          isSelected: valuedOptions.includes(option.value)
+        });
+      });
+      var parsedOptions = (configField === null || configField === void 0 ? void 0 : configField.liveParser) ? configField.liveParser(options) : options;
+
+      if (!gUtils.G.is(Array, parsedOptions)) {
         throw new Error('liveParser must return array on picker');
       }
 
-      validatePicker(formName, key, options);
-      actions.setFormOptions(formName, key, options, callback);
+      validatePicker(formName, key, fullOptions || []);
+      actions.setFormOptions(formName, key, parsedOptions, callback);
     }
   };
 };
