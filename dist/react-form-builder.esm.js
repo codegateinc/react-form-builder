@@ -250,6 +250,18 @@ var configStore = function configStore() {
 
           return _extends(_extends({}, prevState), {}, (_extends4 = {}, _extends4[key] = onUpdate, _extends4));
         });
+      },
+      setConfigFormField: function setConfigFormField(formKey, key, field) {
+        if (configStore[formKey] && configStore[formKey][key]) {
+          _setConfig(function (prevState) {
+            var _extends5, _extends6;
+
+            return _extends(_extends({}, prevState), {}, (_extends6 = {}, _extends6[formKey] = _extends(_extends({}, prevState[formKey]), {}, (_extends5 = {}, _extends5[key] = _extends(_extends(_extends({}, configStore[formKey][key]), field), {}, {
+              type: configStore[formKey][key].type,
+              options: field.options || (configStore[formKey][key].type === FormFieldType.Picker ? configStore[formKey][key].options : [])
+            }), _extends5)), _extends6));
+          });
+        }
       }
     },
     state: {
@@ -267,10 +279,6 @@ var useValidate = function useValidate() {
   return {
     validateField: function validateField(formName, key, value) {
       var field = config.state.configStore && config.state.configStore[formName] && config.state.configStore[formName][key];
-
-      if (!field.isRequired && value.length === 0) {
-        return form.actions.setFormError(formName, key, undefined);
-      }
 
       if (field === null || field === void 0 ? void 0 : field.validationRules) {
         var validated = field.validationRules.map(function (rule) {
@@ -311,7 +319,7 @@ var useValidate = function useValidate() {
       });
 
       if ((field === null || field === void 0 ? void 0 : field.isRequired) && isAnyOptionSelected) {
-        return form.actions.setFormError(formName, key, errorMessage);
+        return form.actions.setFormError(formName, key, undefined);
       }
 
       form.actions.setFormError(formName, key, errorMessage);
@@ -600,6 +608,8 @@ var renderForm = function renderForm(children, formName) {
 };
 
 var renderChild = function renderChild(child, formName) {
+  var _form$reactElementChi;
+
   if (typeof child === 'string' || typeof child === 'number' || typeof child === null) {
     return child;
   }
@@ -608,12 +618,16 @@ var renderChild = function renderChild(child, formName) {
       state = _useStore.state;
 
   var _useStore2 = useStore(configStore),
-      configOnUpdate = _useStore2.state.configOnUpdate; // tslint:disable-next-line:no-any
+      _useStore2$state = _useStore2.state,
+      configOnUpdate = _useStore2$state.configOnUpdate,
+      config = _useStore2$state.configStore; // tslint:disable-next-line:no-any
 
 
   var reactElementChild = child;
+  var form = config[formName];
+  var elType = form ? (_form$reactElementChi = form[reactElementChild.props.formFieldName]) === null || _form$reactElementChi === void 0 ? void 0 : _form$reactElementChi.type : undefined;
 
-  if (reactElementChild.type === Input) {
+  if (elType === FormFieldType.Input) {
     var _useEvents = useEvents(),
         input = _useEvents.input;
 
@@ -643,7 +657,7 @@ var renderChild = function renderChild(child, formName) {
     }));
   }
 
-  if (reactElementChild.type === CheckBox) {
+  if (elType === FormFieldType.CheckBox) {
     var _useEvents2 = useEvents(),
         checkBox = _useEvents2.checkBox;
 
@@ -670,7 +684,7 @@ var renderChild = function renderChild(child, formName) {
     }));
   }
 
-  if (reactElementChild.type === Picker) {
+  if (elType === FormFieldType.Picker) {
     var _useEvents3 = useEvents(),
         picker = _useEvents3.picker;
 
@@ -758,7 +772,8 @@ var useForm = function useForm(_ref) {
       return !object.isPristine;
     }),
     setField: function setField(formFieldName, field) {
-      return actions.setFormField(formName, formFieldName, field);
+      actions.setFormField(formName, formFieldName, field);
+      config.actions.setConfigFormField(formName, formFieldName, field);
     },
     isFormValid: !validateForm(formName, false).some(function (error) {
       return error;

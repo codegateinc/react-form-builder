@@ -3,7 +3,7 @@
   "author": "@codegate",
   "license": "MIT",
   "typings": "index.d.ts",
-  "version": "0.1.39",
+  "version": "0.1.44",
   "main": "dist/index.js",
   "scripts": {
     "test": "jest",

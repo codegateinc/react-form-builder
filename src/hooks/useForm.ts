@@ -52,7 +52,10 @@ export const useForm = <T>({
         },
         hasChanges: state.formState[formName] && G.toPairs<FieldState>(state.formState[formName])
             .some(([key, object]) => !object.isPristine),
-        setField: (formFieldName: string, field: Omit<FieldConfig, 'type'>) => actions.setFormField(formName, formFieldName, field),
+        setField: (formFieldName: string, field: Omit<FieldConfig, 'type'>) => {
+            actions.setFormField(formName, formFieldName, field)
+            config.actions.setConfigFormField(formName, formFieldName, field)
+        },
         isFormValid: !validateForm(formName, false)
             .some(error => error),
         getField: (formFieldName: string) => actions.getFormField(formName, formFieldName),

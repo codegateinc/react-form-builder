@@ -3,17 +3,18 @@ import { G } from '@codegateinc/g-utils'
 import { useStore } from 'outstated'
 import { useEvents } from 'hooks/useEvents'
 import { configStore, formStore } from 'stores'
-import { CheckBox, Input, Picker } from 'components'
 import {
     FormOption,
     InputProps,
     PickerProps,
     CheckBoxProps,
+    FormFieldType,
     FormInputState,
     FormPickerState,
     FormCheckBoxState
 } from '../types'
 import { parseForm } from './stateUtils'
+import { FieldConfig } from 'types/Form'
 
 export const renderForm = (
     children: React.ReactNode,
@@ -32,12 +33,16 @@ const renderChild = (child: React.ReactNode, formName: string) => {
     }
 
     const { state } = useStore(formStore)
-    const { state: { configOnUpdate } } = useStore(configStore)
+    const { state: { configOnUpdate, configStore: config } } = useStore(configStore)
 
     // tslint:disable-next-line:no-any
     const reactElementChild = child as React.ReactElement<any>
+    const form = config[formName]
+    const elType = form
+        ? (form[reactElementChild.props.formFieldName] as FieldConfig)?.type
+        : undefined
 
-    if (reactElementChild.type === Input) {
+    if (elType === FormFieldType.Input) {
         const { input } = useEvents()
         const inputChild = child as React.ReactElement<InputProps>
         const key = inputChild.props.formFieldName
@@ -59,7 +64,7 @@ const renderChild = (child: React.ReactNode, formName: string) => {
         })
     }
 
-    if (reactElementChild.type === CheckBox) {
+    if (elType === FormFieldType.CheckBox) {
         const { checkBox } = useEvents()
         const checkBoxChild = child as React.ReactElement<CheckBoxProps>
         const key = checkBoxChild.props.formFieldName
@@ -80,7 +85,7 @@ const renderChild = (child: React.ReactNode, formName: string) => {
         })
     }
 
-    if (reactElementChild.type === Picker) {
+    if (elType === FormFieldType.Picker) {
         const { picker } = useEvents()
         const pickerChild = child as React.ReactElement<PickerProps>
         const key = pickerChild.props.formFieldName

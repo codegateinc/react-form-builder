@@ -13,10 +13,6 @@ export const useValidate = () => {
                 config.state.configStore[formName] &&
                 config.state.configStore[formName][key]
 
-            if (!field.isRequired && value.length === 0) {
-                return form.actions.setFormError(formName, key, undefined)
-            }
-
             if (field?.validationRules) {
                 const validated = field.validationRules
                     .map(rule => rule.validationFunction(value, form.state.formState[formName])
@@ -58,7 +54,7 @@ export const useValidate = () => {
                 .some(option => option.isSelected)
 
             if (field?.isRequired && isAnyOptionSelected) {
-                return form.actions.setFormError(formName, key, errorMessage)
+                return form.actions.setFormError(formName, key, undefined)
             }
 
             form.actions.setFormError(formName, key, errorMessage)
